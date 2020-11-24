@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/OnlineMultipleChoiceExam.iml" filepath="$PROJECT_DIR$/OnlineMultipleChoiceExam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OnlineMultipleChoiceExamClient/OnlineMultipleChoiceExamClient.iml" filepath="$PROJECT_DIR$/OnlineMultipleChoiceExamClient/OnlineMultipleChoiceExamClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OnlineMultipleChoiceExamServer/OnlineMultipleChoiceExamServer.iml" filepath="$PROJECT_DIR$/OnlineMultipleChoiceExamServer/OnlineMultipleChoiceExamServer.iml" />
     </modules>
   </component>
 </project>
