@@ -2,8 +2,10 @@ package server;
 
 
 
+import common.Exam;
 import common.OMCEClient;
 import common.OMCEServer;
+import common.Quiz;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -28,5 +30,11 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 System.out.println("error in call");
             }
         }
+    }
+
+    public Exam createExam(String csvFile){
+        ExamGenerator generator = new ExamGenerator(csvFile);
+
+        return generator.generateExam();
     }
 }

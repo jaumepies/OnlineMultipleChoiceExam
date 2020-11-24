@@ -1,5 +1,6 @@
 package server;
 
+import common.Exam;
 import common.OMCEServer;
 
 import java.rmi.RemoteException;
@@ -30,10 +31,17 @@ public class Server {
 
     public static void main(String[] args){
         try{
+
+
+            Registry registry = startRegistry(null);
             OMCEServer obj = new OMCEServerImpl();
-            startRegistry(null);
-            Registry registry = LocateRegistry.getRegistry();
-            registry.bind("Hello", obj);
+            //Crear el examen
+            //lectura dle fitxer csv
+            System.out.println("Please upload file .csv exam.");
+            String csvFile = "./Exams/exam.csv";
+            Exam examen = obj.createExam(csvFile);
+            //Registry registry = LocateRegistry.getRegistry();
+            registry.bind("Hello",  obj);
             while(true) {
                 Thread.sleep(5000);
                 System.out.println("Server will notify all registered clients");
