@@ -6,5 +6,5 @@ import java.rmi.RemoteException;
 public interface OMCEServer extends Remote {
     void register(OMCEClient client) throws RemoteException;
 
-    void notify_clients();
+    void notify_clients() throws RemoteException;
 }

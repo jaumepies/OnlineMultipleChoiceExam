@@ -35,6 +35,7 @@ public class Server {
             Registry registry = LocateRegistry.getRegistry();
             registry.bind("Hello", obj);
             while(true) {
+                Thread.sleep(5000);
                 System.out.println("Server will notify all registered clients");
                 obj.notify_clients();
             }
