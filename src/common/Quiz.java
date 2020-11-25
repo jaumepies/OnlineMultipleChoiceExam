@@ -7,9 +7,9 @@ public class Quiz {
     private String question;
     private ArrayList<String> Choices;
     private int CorrectAnswer;
-    private int SelectedChoice;
+    private Integer SelectedChoice;
 
-    public Quiz(int id, String question, ArrayList<String> choices, int correctAnswer, int selectedChoice) {
+    public Quiz(int id, String question, ArrayList<String> choices, int correctAnswer, Integer selectedChoice) {
         this.id = id;
         this.question = question;
         Choices = choices;

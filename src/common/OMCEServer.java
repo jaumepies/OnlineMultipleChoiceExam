@@ -8,5 +8,5 @@ public interface OMCEServer extends Remote {
 
     void notify_clients() throws RemoteException;
 
-    Exam createExam(String csvFile);
+    Exam createExam(String csvFile) throws RemoteException;
 }

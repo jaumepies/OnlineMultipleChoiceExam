@@ -31,17 +31,19 @@ public class Server {
 
     public static void main(String[] args){
         try{
-
-
             Registry registry = startRegistry(null);
             OMCEServer obj = new OMCEServerImpl();
-            //Crear el examen
-            //lectura dle fitxer csv
+
             System.out.println("Please upload file .csv exam.");
-            String csvFile = "./Exams/exam.csv";
-            Exam examen = obj.createExam(csvFile);
+            // Read the .csv file
+            String csvFile = "./OnlineMultipleChoiceExamServer/Exams/exam.csv";
+
+            // Create the exam
+            Exam exam = obj.createExam(csvFile);
+
             //Registry registry = LocateRegistry.getRegistry();
             registry.bind("Hello",  obj);
+
             while(true) {
                 Thread.sleep(5000);
                 System.out.println("Server will notify all registered clients");
