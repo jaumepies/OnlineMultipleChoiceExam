@@ -12,13 +12,17 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
-    public OMCEServerImpl() throws RemoteException{}
 
     private ArrayList<OMCEClient> clients = new ArrayList<>();
 
-    public void register(OMCEClient client) {
-        System.out.println("Registering client");
-        this.clients.add(client);
+    public OMCEServerImpl() throws RemoteException{}
+
+    public void registerStudent(OMCEClient client) {
+        synchronized (this) {
+            System.out.println("Registering client");
+            clients.add(client);
+            this.notify();
+        }
     }
 
     public void notify_clients(){
@@ -36,5 +40,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         ExamGenerator generator = new ExamGenerator(csvFile);
 
         return generator.generateExam();
+    }
+
+    public int getNumStudents(){
+        return clients.size();
     }
 }

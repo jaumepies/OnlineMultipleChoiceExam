@@ -9,6 +9,6 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     public OMCEClientImpl() throws RemoteException {}
 
     public void notifyHello() {
-        System.out.println("Client recieved \"hello world\" message from server");
+        System.out.println("Student recieved \"hello world\" message from server");
     }
 }

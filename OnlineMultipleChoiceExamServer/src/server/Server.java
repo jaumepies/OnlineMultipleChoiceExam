@@ -42,12 +42,14 @@ public class Server {
             Exam exam = obj.createExam(csvFile);
 
             //Registry registry = LocateRegistry.getRegistry();
-            registry.bind("OMCE",  obj);
+            registry.bind("Hello",  obj);
 
             while(true) {
-                Thread.sleep(5000);
-                System.out.println("Server will notify all registered clients");
-                obj.notify_clients();
+                synchronized (obj) {
+                    System.out.println("Students registered " + obj.getNumStudents());
+                    obj.wait();
+                }
+
             }
         }catch(Exception e){
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();
