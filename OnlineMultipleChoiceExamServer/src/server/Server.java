@@ -34,7 +34,7 @@ public class Server {
             Registry registry = startRegistry(null);
             OMCEServer obj = new OMCEServerImpl();
 
-            System.out.println("Please upload file .csv exam.");
+            System.out.println("Please, upload the .csv exam file.");
             // Read the .csv file
             String csvFile = "./OnlineMultipleChoiceExamServer/Exams/exam.csv";
 
@@ -42,7 +42,7 @@ public class Server {
             Exam exam = obj.createExam(csvFile);
 
             //Registry registry = LocateRegistry.getRegistry();
-            registry.bind("Hello",  obj);
+            registry.bind("OMCE",  obj);
 
             while(true) {
                 Thread.sleep(5000);

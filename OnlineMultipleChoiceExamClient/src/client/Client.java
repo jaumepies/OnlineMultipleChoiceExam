@@ -13,9 +13,9 @@ public class Client {
         try {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
-            OMCEServer stub = (OMCEServer) registry.lookup("Hello");
+            OMCEServer stub = (OMCEServer) registry.lookup("OMCE");
             stub.register(client);
-            System.out.println("Client registered, waiting for notification");
+            System.out.println("Client registered, waiting for the exam");
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString()); e.printStackTrace();
         }
