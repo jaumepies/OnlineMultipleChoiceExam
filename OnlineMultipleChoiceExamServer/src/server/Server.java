@@ -6,6 +6,7 @@ import common.OMCEServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Scanner;
 
 public class Server {
     private static Registry startRegistry(Integer port)
@@ -34,19 +35,18 @@ public class Server {
             Registry registry = startRegistry(null);
             OMCEServer obj = new OMCEServerImpl();
 
-            System.out.println("Please, upload the .csv exam file.");
-            // Read the .csv file
-            String csvFile = "./OnlineMultipleChoiceExamServer/Exams/exam.csv";
+            System.out.println("Please, upload the absolute route of .csv exam file.");
+            // Read the route of .csv file
+            String csvFile = args[0];
 
             // Create the exam
             Exam exam = obj.createExam(csvFile);
 
-            //Registry registry = LocateRegistry.getRegistry();
             registry.bind("Hello",  obj);
 
             while(true) {
                 synchronized (obj) {
-                    while (obj.getNumStudents() < 2){
+                    while (!obj.isStartedExam()){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
@@ -59,10 +59,8 @@ public class Server {
                         System.out.println("Recieved university ID");
                         obj.wait();
                     }
-
                 }
             }
-            //System.out.println("Starting the exam.");
         }catch(Exception e){
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();
         }
