@@ -46,11 +46,13 @@ public class Server {
 
             while(true) {
                 synchronized (obj) {
-                    System.out.println("Students registered " + obj.getNumStudents());
-                    obj.wait();
+                    while (obj.getNumStudents() < 2){
+                        System.out.println("Students registered " + obj.getNumStudents());
+                        obj.wait();
+                    }
                 }
-
             }
+            //System.out.println("Starting the exam.");
         }catch(Exception e){
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();
         }
