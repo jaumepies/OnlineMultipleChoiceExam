@@ -46,7 +46,9 @@ public class Server {
 
             while(true) {
                 synchronized (obj) {
-                    while (!obj.isStartedExam()){
+                    boolean startExam = false;
+                    startExam = obj.isStartedExam();
+                    while (!startExam){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
