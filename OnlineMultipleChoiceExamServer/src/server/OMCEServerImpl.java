@@ -10,10 +10,14 @@ import common.Quiz;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     private ArrayList<OMCEClient> clients = new ArrayList<>();
+    private HashMap<OMCEClient, String> studentIds = new HashMap<>();
+    int answers = 0;
 
     public OMCEServerImpl() throws RemoteException{}
 
@@ -36,6 +40,21 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
+    public void notifyStart(){
+        List<OMCEClient> error_students = new ArrayList<>();
+        for (OMCEClient c :clients) {
+            try{
+                c.notifyStart();
+            }catch(RemoteException e){
+                System.out.println("Student is not reachable");
+                error_students.add(c);
+            }
+        }
+        for(OMCEClient c: error_students){
+            this.clients.remove(c);
+        }
+    }
+
     public Exam createExam(String csvFile){
         ExamGenerator generator = new ExamGenerator(csvFile);
 
@@ -45,4 +64,15 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     public int getNumStudents(){
         return clients.size();
     }
+
+    public void sendId(OMCEClient student, String universityID) {
+        synchronized (this) {
+            System.out.println(universityID);
+            studentIds.put(student, universityID);
+            answers++;
+            this.notify();
+        }
+    }
+
+    public int getAnswers(){ return  answers; }
 }

@@ -46,12 +46,20 @@ public class Server {
 
             while(true) {
                 synchronized (obj) {
-                    System.out.println("NO hi ha conflicte");
                     while (obj.getNumStudents() < 2){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
                     System.out.println("Starting exam.");
+                    obj.wait();
+
+                    obj.notifyStart();
+
+                    while (obj.getAnswers() < obj.getNumStudents()) {
+                        System.out.println("Recieved university ID");
+                        obj.wait();
+                    }
+
                 }
             }
             //System.out.println("Starting the exam.");

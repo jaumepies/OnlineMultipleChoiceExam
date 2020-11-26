@@ -16,6 +16,9 @@ public class Client {
             OMCEServer stub = (OMCEServer) registry.lookup("Hello");
             stub.registerStudent(client);
             System.out.println("Student registered, waiting for the exam");
+
+            String id = client.getId();
+            stub.sendId(client, id);
         } catch (Exception e) {
             System.err.println("Student exception: " + e.toString()); e.printStackTrace();
         }
