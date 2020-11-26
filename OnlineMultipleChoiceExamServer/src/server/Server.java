@@ -46,6 +46,7 @@ public class Server {
 
             while(true) {
                 synchronized (obj) {
+                    System.out.println("NO hi ha conflicte");
                     while (obj.getNumStudents() < 2){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
