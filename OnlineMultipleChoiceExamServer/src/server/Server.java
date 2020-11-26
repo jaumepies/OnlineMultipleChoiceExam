@@ -50,6 +50,7 @@ public class Server {
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
+                    System.out.println("Starting exam.");
                 }
             }
             //System.out.println("Starting the exam.");
