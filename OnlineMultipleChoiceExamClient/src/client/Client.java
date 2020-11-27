@@ -14,7 +14,6 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
             OMCEServer stub = (OMCEServer) registry.lookup("Hello");
-            System.out.println("Pass me the fucking id");
             String id = client.getId();
             stub.registerStudent(client, id);
             //stub.sendId(client, id);

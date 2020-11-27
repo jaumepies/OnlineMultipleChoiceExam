@@ -9,7 +9,9 @@ public interface OMCEServer extends Remote {
 
     void notify_clients() throws RemoteException;
 
-    void notifyStart() throws RemoteException;
+    void notifyStartExam() throws RemoteException;
+
+    String getFilePath() throws RemoteException;
 
     Exam createExam(String csvFile) throws RemoteException;
 

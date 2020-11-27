@@ -14,7 +14,7 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
         System.out.println("Student recieved \"hello world\" message from server");
     }
 
-    public void notifyStart() throws RemoteException{
+    public void notifyStartExam() throws RemoteException{
         System.out.println("The exam is going to start");
 
         synchronized (this) {

@@ -14,8 +14,8 @@ public class ThreadStartExam extends Thread{
 
     public void run() {
         while (!isStarted) {
-                Scanner keyboard = new Scanner(System.in);
-                String line = keyboard.nextLine();
+            Scanner keyboard = new Scanner(System.in);
+            String line = keyboard.nextLine();
             synchronized (obj){
                 isStarted = true;
                 obj.notify();
