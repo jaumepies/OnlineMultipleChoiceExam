@@ -17,25 +17,27 @@ import java.util.Scanner;
 
 public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
-    private ArrayList<OMCEClient> clients = new ArrayList<>();
+    private ArrayList<OMCEClient> students = new ArrayList<>();
     private HashMap<OMCEClient, String> studentIds = new HashMap<>();
     int answers = 0;
 
     public OMCEServerImpl() throws RemoteException{}
 
-    public void registerStudent(OMCEClient client) {
+    public void registerStudent(OMCEClient student, String universityID) {
         synchronized (this) {
-            System.out.println("Registering client");
-            clients.add(client);
+            System.out.println("Registering student");
+            students.add(student);
+            studentIds.put(student, universityID);
+            answers++;
             this.notify();
         }
     }
 
     public void notify_clients(){
-        for (OMCEClient c:this.clients){
+        for (OMCEClient s:this.students){
             try {
                 System.out.println("calling the client");
-                c.notifyHello();
+                s.notifyHello();
             }catch(RemoteException e){
                 System.out.println("error in call");
             }
@@ -44,16 +46,16 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     public void notifyStart(){
         List<OMCEClient> error_students = new ArrayList<>();
-        for (OMCEClient c :clients) {
+        for (OMCEClient s :students) {
             try{
-                c.notifyStart();
+                s.notifyStart();
             }catch(RemoteException e){
                 System.out.println("Student is not reachable");
-                error_students.add(c);
+                error_students.add(s);
             }
         }
-        for(OMCEClient c: error_students){
-            this.clients.remove(c);
+        for(OMCEClient s: error_students){
+            this.students.remove(s);
         }
     }
 
@@ -64,14 +66,13 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     public int getNumStudents(){
-        return clients.size();
+        return students.size();
     }
 
     public void sendId(OMCEClient student, String universityID) {
         synchronized (this) {
             System.out.println(universityID);
             studentIds.put(student, universityID);
-            answers++;
             this.notify();
         }
     }

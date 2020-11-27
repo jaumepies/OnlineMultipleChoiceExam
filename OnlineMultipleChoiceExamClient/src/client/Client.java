@@ -14,10 +14,11 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
             OMCEServer stub = (OMCEServer) registry.lookup("Hello");
-            stub.registerStudent(client);
-            System.out.println("Student registered, waiting for the exam");
+            System.out.println("Pass me the fucking id");
             String id = client.getId();
-            stub.sendId(client, id);
+            stub.registerStudent(client, id);
+            //stub.sendId(client, id);
+            System.out.println("Student registered, waiting for the exam");
         } catch (Exception e) {
             System.err.println("Student exception: " + e.toString()); e.printStackTrace();
         }
