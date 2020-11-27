@@ -77,26 +77,4 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     public int getAnswers(){ return  answers; }
-
-    public boolean isStartedExam() {
-
-        new Thread(){
-            boolean isStarted = false;
-            @Override
-            public void run() {
-                super.run();
-                Scanner keyboard = new Scanner(System.in);
-                String line = keyboard.nextLine();
-                isStarted = true;
-
-                String responseLine;
-                while(!isInterrupted())
-                    while ((responseLine = keyboard.nextLine()) != null) {
-                        System.out.println(responseLine);
-                        if (responseLine.contains("Bye")) break;
-                    }
-            }
-        }
-        return isStarted;
-    }
 }

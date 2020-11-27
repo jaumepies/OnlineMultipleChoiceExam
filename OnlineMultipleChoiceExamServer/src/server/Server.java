@@ -46,9 +46,9 @@ public class Server {
 
             while(true) {
                 synchronized (obj) {
-                    boolean startExam = false;
-                    startExam = obj.isStartedExam();
-                    while (!startExam){
+                    ThreadStartExam thread = new ThreadStartExam(obj);
+                    thread.start();
+                    while (!thread.isStartedExam()){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
