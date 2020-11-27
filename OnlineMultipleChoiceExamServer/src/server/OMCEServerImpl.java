@@ -64,7 +64,8 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         System.out.println("Please, enter the absolute route of .csv exam file.");
         //return keyboard.nextLine();
         String line = keyboard.nextLine();
-        return "C:/Users/Ricard/Downloads/exam.csv";
+        //return "C:/Users/Ricard/Downloads/exam.csv";
+        return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
     }
 
     public Exam createExam(String csvFile){
@@ -84,21 +85,26 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     public void sendQuizzes(){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             try{
-                String quiz = getQuiz(s.getKey());
-                synchronized (this) {
-
-                    s.getKey().sendQuiz(s);
-
+                Exam exam = studentExams.get(s.getKey());
+                String nextQuiz = exam.getNextQuiz();
+                if(nextQuiz!= null){
+                    s.getValue().notifyQuiz(nextQuiz);
+                }else{
+                    //String result = exam.getResult();
+                    //s.getValue().notifyResult(result);
                 }
-
-
             }catch(RemoteException e){
                 System.out.println("Student is not reachable");
             }
         }
     }
 
-    public String getQuiz(String key) {
-        Quiz quiz = studentExams.get(key).getQuizzes();
+    public void sendAnswer(String studentId, String answerNum) {
+        synchronized (this) {
+            System.out.println(answerNum);
+            //Exam exam = studentExams.get(studentId);
+            this.notify();
+        }
     }
+
 }

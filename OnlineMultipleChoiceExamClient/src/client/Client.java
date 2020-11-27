@@ -20,7 +20,12 @@ public class Client {
             }
             String id = client.getId();
             stub.registerStudent(client, id);
-
+            synchronized(client){
+                client.wait();//espera la quiz
+                stub.sendAnswer(id, client.getAnswer());
+                client.wait();
+                System.exit(0);
+            }
         } catch (Exception e) {
             System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
             System.exit(0);

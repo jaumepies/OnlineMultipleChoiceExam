@@ -7,7 +7,7 @@ public class Quiz {
     private String question;
     private ArrayList<String> Choices;
     private int CorrectAnswer;
-    private Integer SelectedChoice;
+    public Integer SelectedChoice;
 
     public Quiz(int id, String question, ArrayList<String> choices, int correctAnswer, Integer selectedChoice) {
         this.id = id;
@@ -16,4 +16,13 @@ public class Quiz {
         CorrectAnswer = correctAnswer;
         SelectedChoice = selectedChoice;
     }
+
+    @Override
+    public String toString() {
+        return  question + '\'' +
+                ", Choices=" + Choices +
+                '}';
+    }
+
+
 }

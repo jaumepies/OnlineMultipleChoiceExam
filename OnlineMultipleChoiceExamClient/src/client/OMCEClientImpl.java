@@ -23,4 +23,14 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
         System.out.println("Enter your university ID");
         return keyboard.nextLine();
     }
+
+    public void notifyQuiz(String quiz){
+        System.out.println(quiz);
+    }
+
+    public String getAnswer(){
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter your answer number:");
+        return keyboard.nextLine();
+    }
 }

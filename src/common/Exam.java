@@ -13,4 +13,13 @@ public class Exam {
     public ArrayList<Quiz> getQuizzes() {
         return quizzes;
     }
+
+    public String getNextQuiz(){
+        for(Quiz q: quizzes){
+            if(q.SelectedChoice == null){
+                return q.toString();
+            }
+        }
+        return null;
+    }
 }
