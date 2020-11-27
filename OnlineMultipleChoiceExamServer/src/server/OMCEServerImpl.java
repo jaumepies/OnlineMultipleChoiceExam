@@ -19,7 +19,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     private ArrayList<OMCEClient> students = new ArrayList<>();
     private HashMap<OMCEClient, String> studentIds = new HashMap<>();
+    private HashMap<String, Exam> studentExams = new HashMap<>();
     int answers = 0;
+    boolean isStartedExam = false;
 
     public OMCEServerImpl() throws RemoteException{}
 
@@ -45,6 +47,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     public void notifyStartExam(){
+        isStartedExam = true;
         List<OMCEClient> error_students = new ArrayList<>();
         for (OMCEClient s :students) {
             try{
@@ -62,7 +65,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     public String getFilePath(){
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Please, enter the absolute route of .csv exam file.");
-        return keyboard.nextLine();
+        //return keyboard.nextLine();
+        String line = keyboard.nextLine();
+        return "C:/Users/Ricard/Downloads/exam.csv";
     }
 
     public Exam createExam(String csvFile){
@@ -85,4 +90,8 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     public int getAnswers(){ return  answers; }
+
+    public boolean isStartedExam(){
+        return isStartedExam;
+    }
 }

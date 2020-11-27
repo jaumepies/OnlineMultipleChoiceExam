@@ -14,12 +14,20 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
             OMCEServer stub = (OMCEServer) registry.lookup("Hello");
-            String id = client.getId();
-            stub.registerStudent(client, id);
-            //stub.sendId(client, id);
-            System.out.println("Student registered, waiting for the exam");
+            if (stub.isStartedExam()) {
+                System.out.println("The exam has already started.");
+                System.exit(0);
+            }
+            else{
+                String id = client.getId();
+                stub.registerStudent(client, id);
+                //stub.sendId(client, id);
+                System.out.println("Student registered, waiting for the exam");
+            }
+
         } catch (Exception e) {
-            System.err.println("Student exception: " + e.toString()); e.printStackTrace();
+            System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
+            System.exit(0);
         }
     }
 }

@@ -34,15 +34,14 @@ public class Server {
         try{
             Registry registry = startRegistry(null);
             OMCEServer obj = new OMCEServerImpl();
-            registry.bind("Hello",  obj);
-
-            System.out.println("C:/Users/Ricard/Downloads/exam.csv");
 
             // Read the route of .csv file
             String csvFile = obj.getFilePath();
             // Create the exam
             Exam exam = obj.createExam(csvFile);
             System.out.println("The exam is uploaded correctly");
+
+            registry.bind("Hello",  obj);
 
             while(true) {
                 synchronized (obj) {
@@ -55,10 +54,8 @@ public class Server {
 
                     obj.notifyStartExam();
 
-                    while (obj.getAnswers() < obj.getNumStudents()) {
-                        System.out.println("Recieved university ID");
-                        obj.wait();
-                    }
+
+                    obj.wait();
                 }
             }
         }catch(Exception e){

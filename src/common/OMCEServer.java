@@ -20,4 +20,6 @@ public interface OMCEServer extends Remote {
     void sendId(OMCEClient student, String universityID) throws RemoteException;
 
     int getAnswers() throws RemoteException;
+
+    boolean isStartedExam() throws RemoteException;
 }
