@@ -26,4 +26,8 @@ public class ThreadStartExam extends Thread{
     public boolean isStartedExam() {
         return isStarted;
     }
+
+    public boolean isFinishedExam() {
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ import common.OMCEServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Server {
@@ -53,9 +54,13 @@ public class Server {
                     }
 
                     obj.notifyStartExam();
-
-
-                    obj.wait();
+                    obj.generateStudentExams(exam);
+                    while(!thread.isFinishedExam()) {
+                        //TODO: finalitzar la sessió quan tots els alumnes hagin acabat l'examen
+                        obj.sendQuizzes();
+                        obj.wait();
+                    }
+                    //obj.createResults();
                 }
             }
         }catch(Exception e){

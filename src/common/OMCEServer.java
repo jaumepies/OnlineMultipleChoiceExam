@@ -7,8 +7,6 @@ import java.rmi.RemoteException;
 public interface OMCEServer extends Remote {
     void registerStudent(OMCEClient student, String universityID) throws RemoteException;
 
-    void notify_clients() throws RemoteException;
-
     void notifyStartExam() throws RemoteException;
 
     String getFilePath() throws RemoteException;
@@ -17,9 +15,9 @@ public interface OMCEServer extends Remote {
 
     int getNumStudents() throws RemoteException;
 
-    void sendId(OMCEClient student, String universityID) throws RemoteException;
-
-    int getAnswers() throws RemoteException;
-
     boolean isStartedExam() throws RemoteException;
+
+    void generateStudentExams(Exam exam) throws RemoteException;
+
+    void sendQuizzes() throws RemoteException;
 }

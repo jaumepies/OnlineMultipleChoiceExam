@@ -18,12 +18,8 @@ public class Client {
                 System.out.println("The exam has already started.");
                 System.exit(0);
             }
-            else{
-                String id = client.getId();
-                stub.registerStudent(client, id);
-                //stub.sendId(client, id);
-                System.out.println("Student registered, waiting for the exam");
-            }
+            String id = client.getId();
+            stub.registerStudent(client, id);
 
         } catch (Exception e) {
             System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
