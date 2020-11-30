@@ -24,10 +24,12 @@ public class Client {
                 client.wait();
                 //mentre no final de examen
                 while(!stub.isStudentExamFinished(id)){ //quan JO(alumne) acabo el examen
-                    stub.sendAnswer(id, client.getAnswer());
+                    String answer = client.getAnswer();
+                    stub.sendAnswer(id, answer);
                     client.wait();
                 }
             }
+
             System.exit(0);
 
 

@@ -54,10 +54,11 @@ public class Server {
                     }
                     obj.generateStudentExams(exam);
                     obj.notifyStartExam();
+                    obj.sendQuizzes();
 
                     while(!thread.isExamSessionFinished()) { //sessio de examen TOTS els examens
                         //TODO: finalitzar la sessió quan tots els alumnes hagin acabat l'examen
-                        obj.sendQuizzes();
+                        //obj.sendQuiz();
                         obj.wait();
                     }
                     //obj.createResults();

@@ -12,9 +12,6 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     public void notifyStartExam() {
         System.out.println("The exam is going to start");
-        synchronized (this) {
-            this.notify();
-        }
     }
 
     public void notifyRegisterStudent() {
