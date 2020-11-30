@@ -15,7 +15,9 @@ public interface OMCEServer extends Remote {
 
     int getNumStudents() throws RemoteException;
 
-    boolean isStartedExam() throws RemoteException;
+    boolean isExamStarted() throws RemoteException;
+    boolean isExamFinished() throws RemoteException;
+    boolean isStudentExamFinished(String studentId) throws RemoteException;
 
     void generateStudentExams(Exam exam) throws RemoteException;
 

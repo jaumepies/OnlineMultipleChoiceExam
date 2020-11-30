@@ -19,7 +19,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     private HashMap<String, OMCEClient> students = new HashMap<>();
     private HashMap<String, Exam> studentExams = new HashMap<>();
-    boolean isStartedExam = false;
+    boolean isExamStarted = false;
+    boolean isExamFinished = false;
+    boolean isStudentExamFinished = false;
 
     public OMCEServerImpl() throws RemoteException{}
 
@@ -38,7 +40,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     public void notifyStartExam(){
-        isStartedExam = true;
+        isExamStarted = true;
         List<OMCEClient> error_students = new ArrayList<>();
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             try{
@@ -78,20 +80,29 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         return students.size();
     }
 
-    public boolean isStartedExam(){
-        return isStartedExam;
+    public boolean isExamStarted(){
+        return isExamStarted;
+    }
+
+    public boolean isExamFinished(){ return isExamFinished; }
+
+    public boolean isStudentExamFinished(String studentId){
+        Exam exam = studentExams.get(studentId);
+        return exam.isFinished;
     }
 
     public void sendQuizzes(){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             try{
                 Exam exam = studentExams.get(s.getKey());
-                String nextQuiz = exam.getNextQuiz();
+                Quiz nextQuiz = exam.getNextQuiz();
                 if(nextQuiz!= null){
-                    s.getValue().notifyQuiz(nextQuiz);
+                    s.getValue().notifyQuiz(nextQuiz.toString());
                 }else{
-                    //String result = exam.getResult();
-                    //s.getValue().notifyResult(result);
+                    exam.isFinished = true;
+                    //String result = exam.getResult(); TODO
+                    String result = "10";
+                    s.getValue().notifyResult(result);
                 }
             }catch(RemoteException e){
                 System.out.println("Student is not reachable");
@@ -102,7 +113,11 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     public void sendAnswer(String studentId, String answerNum) {
         synchronized (this) {
             System.out.println(answerNum);
-            //Exam exam = studentExams.get(studentId);
+            Exam exam = studentExams.get(studentId);
+            Quiz quiz = exam.getNextQuiz();
+            quiz.SelectedChoice = Integer.parseInt(answerNum);
+            exam.setQuiz(quiz);
+            studentExams.put(studentId, exam);
             this.notify();
         }
     }

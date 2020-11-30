@@ -23,11 +23,11 @@ public class ThreadStartExam extends Thread{
         }
     }
 
-    public boolean isStartedExam() {
+    public boolean isExamSessionStarted() {
         return isStarted;
     }
 
-    public boolean isFinishedExam() {
+    public boolean isExamSessionFinished() {
         return false;
     }
 }

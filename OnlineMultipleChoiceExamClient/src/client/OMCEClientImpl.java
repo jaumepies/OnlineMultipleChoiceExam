@@ -12,6 +12,9 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     public void notifyStartExam() {
         System.out.println("The exam is going to start");
+        synchronized (this) {
+            this.notify();
+        }
     }
 
     public void notifyRegisterStudent() {
@@ -26,11 +29,18 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     public void notifyQuiz(String quiz){
         System.out.println(quiz);
+        synchronized (this) {
+            this.notify();
+        }
     }
 
     public String getAnswer(){
         Scanner keyboard = new Scanner(System.in);
         System.out.println("Enter your answer number:");
         return keyboard.nextLine();
+    }
+
+    public void notifyResult(String result){
+        System.out.println("The result is: "+ result);
     }
 }

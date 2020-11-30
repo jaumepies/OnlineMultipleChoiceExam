@@ -5,21 +5,27 @@ import java.util.ArrayList;
 
 public class Exam {
     private ArrayList<Quiz> quizzes;
+    public boolean isFinished;
 
     public Exam(ArrayList<Quiz> quizzes) {
         this.quizzes = quizzes;
+        this.isFinished = false;
     }
 
     public ArrayList<Quiz> getQuizzes() {
         return quizzes;
     }
 
-    public String getNextQuiz(){
+    public Quiz getNextQuiz(){
         for(Quiz q: quizzes){
             if(q.SelectedChoice == null){
-                return q.toString();
+                return q;
             }
         }
         return null;
+    }
+
+    public void setQuiz( Quiz quiz){
+        quizzes.set(quiz.id, quiz);
     }
 }

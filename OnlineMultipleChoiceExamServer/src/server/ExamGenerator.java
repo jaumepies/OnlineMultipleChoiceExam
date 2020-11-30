@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class ExamGenerator {
     private String csvFile;
-    private int idQuiz = 1;
+    private int idQuiz = 0;
 
     public ExamGenerator(String csvFile) {
         this.csvFile = csvFile;

@@ -3,7 +3,7 @@ package common;
 import java.util.ArrayList;
 
 public class Quiz {
-    private int id;
+    public int id;
     private String question;
     private ArrayList<String> Choices;
     private int CorrectAnswer;

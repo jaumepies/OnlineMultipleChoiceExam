@@ -48,14 +48,14 @@ public class Server {
                 synchronized (obj) {
                     ThreadStartExam thread = new ThreadStartExam(obj);
                     thread.start();
-                    while (!thread.isStartedExam()){
+                    while (!thread.isExamSessionStarted()){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
-
-                    obj.notifyStartExam();
                     obj.generateStudentExams(exam);
-                    while(!thread.isFinishedExam()) {
+                    obj.notifyStartExam();
+
+                    while(!thread.isExamSessionFinished()) { //sessio de examen TOTS els examens
                         //TODO: finalitzar la sessió quan tots els alumnes hagin acabat l'examen
                         obj.sendQuizzes();
                         obj.wait();
