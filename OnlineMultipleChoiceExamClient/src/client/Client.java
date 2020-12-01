@@ -24,16 +24,13 @@ public class Client {
                 client.wait();
                 //mentre no final de examen
                 while(!stub.isStudentExamFinished(id)){ //quan JO(alumne) acabo el examen
-                    String answer = client.getAnswer();
-                    stub.sendAnswer(id, answer);
+                    ThreadAnswer thread = new ThreadAnswer(stub, client, id);
+                    thread.start();
                     client.wait();
                 }
-                System.out.println("hem sortit del bucle!!!!!!");
+                System.out.println("The exam session has finished.");
             }
-
             System.exit(0);
-
-
         } catch (Exception e) {
             System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
             e.printStackTrace();
