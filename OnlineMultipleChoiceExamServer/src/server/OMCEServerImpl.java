@@ -66,8 +66,8 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         System.out.println("Please, enter the absolute route of .csv exam file.");
         //return keyboard.nextLine();
         String line = keyboard.nextLine();
-        return "C:/Users/Ricard/Downloads/exam.csv";
-        //return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
+        //return "C:/Users/Ricard/Downloads/exam.csv";
+        return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
     }
 
     public int getNumStudents(){
@@ -120,7 +120,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     public void sendAnswer(String studentId, String answerNum) {
         synchronized (this) {
-            System.out.println(answerNum);
+            //System.out.println(answerNum);
             Exam exam = studentExams.get(studentId);
             Quiz quiz = exam.getNextQuiz();
             quiz.SelectedChoice = Integer.parseInt(answerNum);

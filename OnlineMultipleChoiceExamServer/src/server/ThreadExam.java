@@ -21,6 +21,7 @@ public class ThreadExam extends Thread{
                 obj.notify();
             }
         }
+
     }
 
     public boolean isExamSessionStarted() {
@@ -28,6 +29,6 @@ public class ThreadExam extends Thread{
     }
 
     public boolean isExamSessionFinished() {
-        return false;
+        return isStarted;
     }
 }
