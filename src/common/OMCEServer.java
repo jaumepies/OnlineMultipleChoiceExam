@@ -1,6 +1,5 @@
 package common;
 
-import server.ThreadStartExam;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -11,19 +10,22 @@ public interface OMCEServer extends Remote {
 
     String getFilePath() throws RemoteException;
 
-    Exam createExam(String csvFile) throws RemoteException;
-
     int getNumStudents() throws RemoteException;
 
     boolean isExamStarted() throws RemoteException;
-    boolean isExamFinished() throws RemoteException;
+
     boolean isStudentExamFinished(String studentId) throws RemoteException;
 
-    void generateStudentExams(Exam exam) throws RemoteException;
+    void generateStudentExams(String csvFile) throws RemoteException;
 
     void sendQuizzes() throws RemoteException;
 
     void sendAnswer(String studentId, String answerNum) throws RemoteException;
 
+    void sendQuiz() throws RemoteException;
+
+    void send() throws RemoteException;
+
+    void sendQuizTo(String studentId, OMCEClient student) throws RemoteException;
 
 }

@@ -4,11 +4,11 @@ import common.OMCEServer;
 
 import java.util.Scanner;
 
-public class ThreadStartExam extends Thread{
+public class ThreadExam extends Thread{
     public boolean isStarted = false;
     public OMCEServer obj;
 
-    public ThreadStartExam(OMCEServer obj){
+    public ThreadExam(OMCEServer obj){
         this.obj = obj;
     }
 

@@ -1,13 +1,10 @@
 package server;
 
-import common.Exam;
 import common.OMCEServer;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class Server {
     private static Registry startRegistry(Integer port)
@@ -39,26 +36,26 @@ public class Server {
             // Read the route of .csv file
             String csvFile = obj.getFilePath();
             // Create the exam
-            Exam exam = obj.createExam(csvFile);
+            //Exam exam = obj.createExam(csvFile);
             System.out.println("The exam is uploaded correctly");
 
             registry.bind("Hello",  obj);
 
             while(true) {
                 synchronized (obj) {
-                    ThreadStartExam thread = new ThreadStartExam(obj);
+                    ThreadExam thread = new ThreadExam(obj);
                     thread.start();
                     while (!thread.isExamSessionStarted()){
                         System.out.println("Students registered " + obj.getNumStudents());
                         obj.wait();
                     }
-                    obj.generateStudentExams(exam);
+                    obj.generateStudentExams(csvFile);
                     obj.notifyStartExam();
-                    obj.sendQuizzes();
+                    System.out.println("Starting exam.");
 
                     while(!thread.isExamSessionFinished()) { //sessio de examen TOTS els examens
                         //TODO: finalitzar la sessió quan tots els alumnes hagin acabat l'examen
-                        //obj.sendQuiz();
+                        obj.send();
                         obj.wait();
                     }
                     //obj.createResults();

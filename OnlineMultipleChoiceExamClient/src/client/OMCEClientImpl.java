@@ -39,5 +39,8 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     public void notifyResult(String result){
         System.out.println("The result is: "+ result);
+        synchronized (this) {
+            this.notify();
+        }
     }
 }

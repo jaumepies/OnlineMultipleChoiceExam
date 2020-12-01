@@ -22,6 +22,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     boolean isExamStarted = false;
     boolean isExamFinished = false;
     boolean isStudentExamFinished = false;
+    private String studentToNotify = "ALL";
 
     public OMCEServerImpl() throws RemoteException{}
 
@@ -35,7 +36,6 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             }catch (RemoteException e){
                 System.out.println("Student is not reachable");
             }
-
         }
     }
 
@@ -55,9 +55,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
-    public void generateStudentExams(Exam exam){
+    public void generateStudentExams(String csvFile){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
-            studentExams.put(s.getKey(), exam);
+            studentExams.put(s.getKey(), ExamGenerator.generateExam(csvFile));
         }
     }
 
@@ -68,12 +68,6 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         String line = keyboard.nextLine();
         return "C:/Users/Ricard/Downloads/exam.csv";
         //return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
-    }
-
-    public Exam createExam(String csvFile){
-        ExamGenerator generator = new ExamGenerator(csvFile);
-
-        return generator.generateExam();
     }
 
     public int getNumStudents(){
@@ -91,22 +85,36 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         return exam.isFinished;
     }
 
+    public void send() {
+        if (studentToNotify.equals("ALL"))
+            sendQuizzes();
+        else
+            sendQuiz();
+    }
+
     public void sendQuizzes(){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
-            try{
-                Exam exam = studentExams.get(s.getKey());
-                Quiz nextQuiz = exam.getNextQuiz();
-                if(nextQuiz!= null){
-                    s.getValue().notifyQuiz(nextQuiz.toString());
-                }else{
-                    exam.isFinished = true;
-                    //String result = exam.getResult(); TODO
-                    String result = "10";
-                    s.getValue().notifyResult(result);
-                }
-            }catch(RemoteException e){
-                System.out.println("Student is not reachable");
+            sendQuizTo(s.getKey(), s.getValue());
+        }
+    }
+
+    public void sendQuiz() {
+        sendQuizTo(studentToNotify, students.get(studentToNotify));
+    }
+
+    public void sendQuizTo(String id, OMCEClient student) {
+        try{
+            Exam exam = studentExams.get(id);
+            Quiz nextQuiz = exam.getNextQuiz();
+            if(nextQuiz!= null){
+                students.get(id).notifyQuiz(nextQuiz.toString());
+            }else{
+                exam.isFinished = true;
+                String result = exam.getResult();
+                student.notifyResult(result);
             }
+        }catch(RemoteException e){
+            System.out.println("Student is not reachable");
         }
     }
 
@@ -118,25 +126,8 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             quiz.SelectedChoice = Integer.parseInt(answerNum);
             exam.setQuiz(quiz);
             studentExams.put(studentId, exam);
+            studentToNotify = studentId;
             this.notify();
-
-            try{
-                Quiz nextQuiz = exam.getNextQuiz();
-                if(nextQuiz!= null){
-                    students.get(studentId).notifyQuiz(nextQuiz.toString());
-
-                }else{
-                    exam.isFinished = true;
-                    //String result = exam.getResult(); TODO
-                    String result = "10";
-                    students.get(studentId).notifyResult(result);
-                }
-            }catch(RemoteException e){
-                System.out.println("Student is not reachable");
-            }
-
-
         }
     }
-
 }

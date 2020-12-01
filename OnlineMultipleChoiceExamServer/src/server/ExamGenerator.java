@@ -10,15 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ExamGenerator {
-    private String csvFile;
-    private int idQuiz = 0;
+    private static int idQuiz;
 
-    public ExamGenerator(String csvFile) {
-        this.csvFile = csvFile;
-    }
-
-    public Exam generateExam(){
+    public static Exam generateExam(String csvFile){
         String line;
+        idQuiz = 0;
         ArrayList<Quiz> quizzes = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
@@ -34,7 +30,7 @@ public class ExamGenerator {
         return new Exam(quizzes);
     }
 
-    private Quiz getQuiz(String line) {
+    private static Quiz getQuiz(String line) {
 
         // Use semicolon as separator
         String cvsSplitBy = ";";
@@ -44,7 +40,7 @@ public class ExamGenerator {
         String lastFragment = fragments[fragments.length - 1];
         String correctAnswer = lastFragment.substring(0, lastFragment.length() - 1);
 
-        Quiz quiz = new Quiz( idQuiz, question, choices, Integer.parseInt(correctAnswer), null);
+        Quiz quiz = new Quiz(idQuiz, question, choices, Integer.parseInt(correctAnswer), null);
         idQuiz += 1;
 
         return quiz;

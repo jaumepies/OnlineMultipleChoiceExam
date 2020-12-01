@@ -17,6 +17,8 @@ public class Quiz {
         SelectedChoice = selectedChoice;
     }
 
+    public int getCorrectAnswer() { return this.CorrectAnswer; }
+
     @Override
     public String toString() {
         return  question + '\'' +

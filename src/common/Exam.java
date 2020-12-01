@@ -28,4 +28,18 @@ public class Exam {
     public void setQuiz( Quiz quiz){
         quizzes.set(quiz.id, quiz);
     }
+
+    public String getResult() {
+        int correct = 0;
+
+        for(Quiz q: quizzes){
+            if(q.SelectedChoice == q.getCorrectAnswer()){
+                correct++;
+            }
+        }
+
+        float result = ((float)correct / quizzes.size()) * 10;
+
+        return String.valueOf(result);
+    }
 }
