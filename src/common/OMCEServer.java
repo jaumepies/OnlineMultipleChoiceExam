@@ -8,7 +8,7 @@ public interface OMCEServer extends Remote {
 
     void notifyStartExam() throws RemoteException;
 
-    String getFilePath() throws RemoteException;
+    String getFilePath(String message) throws RemoteException;
 
     int getNumStudents() throws RemoteException;
 
@@ -16,7 +16,7 @@ public interface OMCEServer extends Remote {
 
     boolean isStudentExamFinished(String studentId) throws RemoteException;
 
-    void generateStudentExams(String csvFile) throws RemoteException;
+    void generateStudentExams(String csvPath) throws RemoteException;
 
     void sendQuizzes() throws RemoteException;
 
@@ -28,7 +28,7 @@ public interface OMCEServer extends Remote {
 
     void sendQuizTo(String studentId, OMCEClient student) throws RemoteException;
 
-    void createResults() throws RemoteException;
+    void createResults(String csvPath) throws RemoteException;
 
     void sendResults() throws RemoteException;
 }

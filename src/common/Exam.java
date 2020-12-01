@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Exam {
     private ArrayList<Quiz> quizzes;
     public boolean isFinished;
+    public String result = "0";
 
     public Exam(ArrayList<Quiz> quizzes) {
         this.quizzes = quizzes;
@@ -38,8 +39,8 @@ public class Exam {
             }
         }
 
-        float result = ((float)correct / quizzes.size()) * 10;
+        result = String.valueOf(((float)correct / quizzes.size()) * 10);
 
-        return String.valueOf(result);
+        return result;
     }
 }

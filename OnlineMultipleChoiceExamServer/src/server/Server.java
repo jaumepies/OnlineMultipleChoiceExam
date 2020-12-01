@@ -36,7 +36,7 @@ public class Server {
             OMCEServer obj = new OMCEServerImpl();
 
             // Read the route of .csv file
-            String csvFile = obj.getFilePath();
+            String csvPath = obj.getFilePath("Please, enter the absolute route of .csv exam file.");
             // Create the exam
             //Exam exam = obj.createExam(csvFile);
             System.out.println("The exam is uploaded correctly");
@@ -56,7 +56,7 @@ public class Server {
                         //obj.wait can be notified from the interrupt key, or the remote object implemented
                     }
 
-                    obj.generateStudentExams(csvFile);
+                    obj.generateStudentExams(csvPath);
                     obj.notifyStartExam();
                     System.out.println("Starting exam.");
 
@@ -71,9 +71,9 @@ public class Server {
                     }
                     System.out.println("Exam session finished.");
                     obj.sendResults();
-                    obj.createResults();//document
-                    obj.wait();
-                    //sortir del bucle
+                    csvPath = obj.getFilePath("Please, enter the absolute route of .csv results file.");
+                    obj.createResults(csvPath);//document
+                    System.exit(0);
                 }
             }
         }catch(Exception e){

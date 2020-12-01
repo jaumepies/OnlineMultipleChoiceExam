@@ -7,13 +7,18 @@ import common.OMCEClient;
 import common.OMCEServer;
 import common.Quiz;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
@@ -55,18 +60,18 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
-    public void generateStudentExams(String csvFile){
+    public void generateStudentExams(String csvPath){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
-            studentExams.put(s.getKey(), ExamGenerator.generateExam(csvFile));
+            studentExams.put(s.getKey(), ExamGenerator.generateExam(csvPath));
         }
     }
 
-    public String getFilePath(){
+    public String getFilePath(String message){
         Scanner keyboard = new Scanner(System.in);
-        System.out.println("Please, enter the absolute route of .csv exam file.");
-        //return keyboard.nextLine();
-        String line = keyboard.nextLine();
-        return "C:/Users/Ricard/Downloads/exam.csv";
+        System.out.println(message);
+        return keyboard.nextLine();
+        //String line = keyboard.nextLine();
+        //return "C:/Users/Ricard/Downloads/exam.csv";
         //return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
     }
 
@@ -145,7 +150,35 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
-    public void createResults(){
+    public void createResults(String csvPath){
+        ArrayList<String[]> studentGrades = new ArrayList<>();
+        studentGrades.add(new String[]{"UniversityID","Grade"});
+        for (HashMap.Entry<String, Exam> s : studentExams.entrySet()) {
+            studentGrades.add(new String[]{s.getKey(),s.getValue().result});
+        }
 
+        File csvOutputFile = new File(csvPath);
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+            studentGrades.stream()
+                    .map(this::convertToCSV)
+                    .forEach(pw::println);
+        }catch (IOException e){
+            System.out.println(e);
+        }
+    }
+
+    public String convertToCSV(String[] data) {
+        return Stream.of(data)
+                .map(this::escapeSpecialCharacters)
+                .collect(Collectors.joining(";"));
+    }
+
+    public String escapeSpecialCharacters(String data) {
+        String escapedData = data.replaceAll("\\R", " ");
+        if (data.contains(";") || data.contains("\"") || data.contains("'")) {
+            data = data.replace("\"", "\"\"");
+            escapedData = "\"" + data + "\"";
+        }
+        return escapedData;
     }
 }
