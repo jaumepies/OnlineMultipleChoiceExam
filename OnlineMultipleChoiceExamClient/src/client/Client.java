@@ -33,7 +33,6 @@ public class Client {
             System.exit(0);
         } catch (Exception e) {
             System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
-            e.printStackTrace();
             System.exit(0);
         }
     }
