@@ -130,4 +130,22 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             this.notify();
         }
     }
+
+    public void sendResults(){
+
+        for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
+            try{
+                Exam exam = studentExams.get(s.getKey());
+                exam.isFinished = true;
+                String result = exam.getResult();
+                s.getValue().notifyResult(result);
+            }catch(RemoteException e){
+                System.out.println("Student is not reachable");
+            }
+        }
+    }
+
+    public void createResults(){
+
+    }
 }

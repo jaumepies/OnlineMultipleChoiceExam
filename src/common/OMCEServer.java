@@ -28,4 +28,7 @@ public interface OMCEServer extends Remote {
 
     void sendQuizTo(String studentId, OMCEClient student) throws RemoteException;
 
+    void createResults() throws RemoteException;
+
+    void sendResults() throws RemoteException;
 }

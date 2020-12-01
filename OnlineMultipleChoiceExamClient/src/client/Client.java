@@ -28,6 +28,7 @@ public class Client {
                     stub.sendAnswer(id, answer);
                     client.wait();
                 }
+                System.out.println("hem sortit del bucle!!!!!!");
             }
 
             System.exit(0);

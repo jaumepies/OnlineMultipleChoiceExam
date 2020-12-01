@@ -33,7 +33,7 @@ public class Exam {
         int correct = 0;
 
         for(Quiz q: quizzes){
-            if(q.SelectedChoice == q.getCorrectAnswer()){
+            if(q.SelectedChoice != null && q.SelectedChoice == q.getCorrectAnswer()){
                 correct++;
             }
         }

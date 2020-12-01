@@ -107,8 +107,9 @@ public class Server {
                         obj.wait();
                     }
                     System.out.println("Exam session finished.");
+                    obj.sendResults();
                     obj.wait();
-                    //obj.createResults();
+                    obj.createResults();//document
                     //sortir del bucle
                 }
             }
