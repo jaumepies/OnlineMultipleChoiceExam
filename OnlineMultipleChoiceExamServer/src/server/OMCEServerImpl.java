@@ -23,7 +23,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     private HashMap<String, OMCEClient> students = new HashMap<>();
     private HashMap<String, Exam> studentExams = new HashMap<>();
-    private List<OMCEClient> error_students = new ArrayList<>();
+    private List<String> error_students = new ArrayList<>();
     boolean isExamStarted = false;
     private String studentToNotify = "ALL";
 
@@ -65,10 +65,10 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 s.getValue().notifyStartExam();
             }catch(RemoteException e){
                 System.out.println(s.getKey() + " is not reachable to starting the exam.");
-                error_students.add(s.getValue());
+                error_students.add(s.getKey());
             }
         }
-        for(OMCEClient s: error_students){
+        for(String s: error_students){
             this.students.remove(s);
         }
     }
@@ -117,7 +117,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             sendQuizzes();
         else
             sendQuiz();
-        for(OMCEClient s: error_students){
+        for(String s: error_students){
             this.students.remove(s);
         }
     }
@@ -142,10 +142,11 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 exam.isFinished = true;
                 String result = exam.getResult();
                 student.notifyResult(result);
+                this.students.remove(id);
             }
         }catch(RemoteException e){
             System.out.println(id + " is not reachable to send quiz.");
-            error_students.add(student);
+            error_students.add(id);
         }
     }
 
@@ -172,10 +173,10 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 s.getValue().notifyResult(result);
             }catch(RemoteException e){
                 System.out.println(s.getKey() + " is not reachable to send result.");
-                error_students.add(s.getValue());
+                error_students.add(s.getKey());
             }
         }
-        for(OMCEClient s: error_students){
+        for(String s: error_students){
             this.students.remove(s);
         }
     }
