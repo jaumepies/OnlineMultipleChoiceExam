@@ -8,6 +8,8 @@ public interface OMCEClient extends Remote {
 
     void notifyRegisterStudent() throws RemoteException;
 
+    boolean isRegistered() throws RemoteException;
+
     String getId() throws RemoteException;
 
     void notifyQuiz(String quiz) throws RemoteException;
@@ -15,4 +17,8 @@ public interface OMCEClient extends Remote {
     String getAnswer() throws RemoteException;
 
     void notifyResult(String result) throws RemoteException;
+
+    void notifyRegisteredStudent() throws RemoteException;
+
+    boolean isCorrectId(String id) throws RemoteException;
 }

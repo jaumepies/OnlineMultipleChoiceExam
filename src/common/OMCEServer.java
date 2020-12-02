@@ -18,17 +18,15 @@ public interface OMCEServer extends Remote {
 
     void generateStudentExams(String csvPath) throws RemoteException;
 
-    void sendQuizzes() throws RemoteException;
-
     void sendAnswer(String studentId, String answerNum) throws RemoteException;
-
-    void sendQuiz() throws RemoteException;
 
     void send() throws RemoteException;
 
-    void sendQuizTo(String studentId, OMCEClient student) throws RemoteException;
-
-    void createResults(String csvPath) throws RemoteException;
+    void createResultsFile(String csvPath) throws RemoteException;
 
     void sendResults() throws RemoteException;
+
+    boolean csvPathIsFile(String csvPath) throws RemoteException;
+
+    boolean csvPathIsDirectory(String csvPath) throws RemoteException;
 }

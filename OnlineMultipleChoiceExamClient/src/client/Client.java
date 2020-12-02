@@ -13,18 +13,24 @@ public class Client {
         try {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
-            OMCEServer stub = (OMCEServer) registry.lookup("Hello");
-            if (stub.isExamStarted()) {
+            OMCEServer server = (OMCEServer) registry.lookup("Hello");
+            if (server.isExamStarted()) {
                 System.out.println("The exam has already started.");
                 System.exit(0);
             }
-            String id = client.getId();
-            stub.registerStudent(client, id);
+            String id;
+            do{
+                do{
+                    id = client.getId();
+                }while(!client.isCorrectId(id));
+                server.registerStudent(client, id);
+            }while(!client.isRegistered());
+
             synchronized (client){
                 client.wait();
                 //mentre no final de examen
-                while(!stub.isStudentExamFinished(id)){ //quan JO(alumne) acabo el examen
-                    ThreadAnswer thread = new ThreadAnswer(stub, client, id);
+                while(!server.isStudentExamFinished(id)){ //quan JO(alumne) acabo el examen
+                    ThreadAnswer thread = new ThreadAnswer(server, client, id);
                     thread.start();
                     client.wait();
                 }

@@ -19,7 +19,7 @@ public class Exam {
 
     public Quiz getNextQuiz(){
         for(Quiz q: quizzes){
-            if(q.SelectedChoice == null){
+            if(q.selectedChoice == null){
                 return q;
             }
         }
@@ -34,7 +34,7 @@ public class Exam {
         int correct = 0;
 
         for(Quiz q: quizzes){
-            if(q.SelectedChoice != null && q.SelectedChoice == q.getCorrectAnswer()){
+            if(q.selectedChoice != null && q.selectedChoice == q.getCorrectAnswer()){
                 correct++;
             }
         }
