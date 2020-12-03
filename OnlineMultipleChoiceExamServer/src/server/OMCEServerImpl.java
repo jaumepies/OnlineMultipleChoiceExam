@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
@@ -29,35 +27,49 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     public OMCEServerImpl() throws RemoteException{}
 
-    public void registerStudent(OMCEClient student, String universityID) {
-        if(students.containsKey(universityID)){
-            studentAlreadyRegistered(student);
+    /**
+     * Check if the student is registered, otherwise it is registered
+     */
+    public void registerStudent(OMCEClient student, String studentId) {
+        if(students.containsKey(studentId)){
+            anotherStudentRegistered(student);
         }else {
-            registerNewStudent(student, universityID);
+            registerNewStudent(student, studentId);
         }
     }
 
-    private void registerNewStudent(OMCEClient student, String universityID) {
+    /**
+     * Stores the student into a Hashmap and notifies to the student that has registered.
+     * In case it cannot establish a connection with the student, it removes it.
+     */
+    private void registerNewStudent(OMCEClient student, String studentId) {
         synchronized (this) {
-            System.out.println("Registering student " + universityID);
-            students.put(universityID, student);
+            System.out.println("Registering student " + studentId);
+            students.put(studentId, student);
             try {
                 student.notifyRegisterStudent();
                 this.notify();
             } catch (RemoteException e) {
-                System.out.println(universityID + " is not reachable to registering.");
-                students.remove(universityID);
+                System.out.println(studentId + " is not reachable to registering.");
+                students.remove(studentId);
             }
         }
     }
 
-    private void studentAlreadyRegistered(OMCEClient student) {
+    /**
+     * Notifies that there is already a student with that id registered
+     */
+    private void anotherStudentRegistered(OMCEClient student) {
         try {
             student.notifyRegisteredStudent();
         }catch (RemoteException e) {
         }
     }
 
+    /**
+     * Notifies all the students that the exam is going to start.
+     * In case it cannot establish a connection with the students, it removes them.
+     */
     public void notifyStartExam(){
         isExamStarted = true;
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
@@ -73,26 +85,37 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
+    /**
+     * Generates a Hashmap with a copy of the exam for each student registered
+     */
     public void generateStudentExams(String csvPath){
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             studentExams.put(s.getKey(), ExamGenerator.generateExam(csvPath));
         }
     }
 
+    /**
+     * Gets the absolute path of the file from stdin
+     */
     public String getFilePath(String message){
         Scanner keyboard = new Scanner(System.in);
         System.out.println(message);
         return keyboard.nextLine();
-        //String line = keyboard.nextLine();
         //return "C:/Users/Ricard/Downloads/exam.csv";
         //return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
     }
 
+    /**
+     * Check if the absolute path is a file
+     */
     public boolean csvPathIsFile(String csvPath) {
         File file = new File(csvPath);
         return file.isFile();
     }
 
+    /**
+     * Check if the absolute path is a directory
+     */
     public boolean csvPathIsDirectory(String csvPath) {
         File file = new File(csvPath);
         return file.isDirectory();
@@ -106,11 +129,18 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         return isExamStarted;
     }
 
+    /**
+     * Check if the student has finished the exam
+     */
     public boolean isStudentExamFinished(String studentId){
         Exam exam = studentExams.get(studentId);
         return exam.isFinished;
     }
 
+    /**
+     * Manages the sending of quizzes to the students and
+     * if there is one not reachable it removes it from the Hashmap
+     */
     public void send() {
         error_students = new ArrayList<>();
         if (studentToNotify.equals("ALL"))
@@ -132,30 +162,41 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         sendQuizTo(studentToNotify, students.get(studentToNotify));
     }
 
-    private void sendQuizTo(String id, OMCEClient student) {
+    /**
+     * Sends a quiz or the result of the exam to the student.
+     * In case it cannot establish a connection with the student, it removes it.
+     */
+    private void sendQuizTo(String studentId, OMCEClient student) {
         try{
-            Exam exam = studentExams.get(id);
+
+            Exam exam = studentExams.get(studentId);
+            // Get the next quiz to send
             Quiz nextQuiz = exam.getNextQuiz();
             if(nextQuiz!= null){
-                students.get(id).notifyQuiz(nextQuiz.toString());
+                students.get(studentId).notifyQuiz(nextQuiz.toString());
             }else{
                 exam.isFinished = true;
+                // Get the result of the exam
                 String result = exam.getResult();
                 student.notifyResult(result);
-                this.students.remove(id);
+                this.students.remove(studentId);
             }
         }catch(RemoteException e){
-            System.out.println(id + " is not reachable to send quiz.");
-            error_students.add(id);
+            System.out.println(studentId + " is not reachable to send quiz.");
+            error_students.add(studentId);
         }
     }
 
+    /**
+     * Receives the student's answer and saves it in the student's exam
+     */
     public void sendAnswer(String studentId, String answerNum) {
         synchronized (this) {
-            //System.out.println(answerNum);
             Exam exam = studentExams.get(studentId);
+            // Get the next quiz to send
             Quiz quiz = exam.getNextQuiz();
             quiz.selectedChoice = Integer.parseInt(answerNum);
+            // Updates the exam with the received answer
             exam.setQuiz(quiz);
             studentExams.put(studentId, exam);
             studentToNotify = studentId;
@@ -163,12 +204,17 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
+    /**
+     * Sends the result of the exam to students.
+     * In case it cannot establish a connection with the students, it removes them.
+     */
     public void sendResults(){
         error_students = new ArrayList<>();
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             try{
                 Exam exam = studentExams.get(s.getKey());
                 exam.isFinished = true;
+                // Get the result of the exam
                 String result = exam.getResult();
                 s.getValue().notifyResult(result);
             }catch(RemoteException e){
@@ -181,35 +227,36 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         }
     }
 
+    /**
+     * Creates the output file where it stores all the id students with their grade
+     */
     public void createResultsFile(String csvPath){
         ArrayList<String[]> studentGrades = new ArrayList<>();
+        // Add the title of the columns
         studentGrades.add(new String[]{"UniversityID","Grade"});
+
         for (HashMap.Entry<String, Exam> s : studentExams.entrySet()) {
             studentGrades.add(new String[]{s.getKey(),s.getValue().result});
         }
+
+        // Add the filename to the absolute path
         csvPath += "/results.csv";
+
         File csvOutputFile = new File(csvPath);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            studentGrades.stream()
-                    .map(this::convertToCSV)
-                    .forEach(pw::println);
+            // Prints each line to the output file
+            for (String[] studentGrade : studentGrades){
+                pw.println(convertToCSV(studentGrade));
+            }
         }catch (IOException e){
-            System.out.println(e);
+            System.out.println("Error writing to file");
         }
     }
 
+    /**
+     * Creates a string from string array
+     */
     private String convertToCSV(String[] data) {
-        return Stream.of(data)
-                .map(this::escapeSpecialCharacters)
-                .collect(Collectors.joining(";"));
-    }
-
-    private String escapeSpecialCharacters(String data) {
-        String escapedData = data.replaceAll("\\R", " ");
-        if (data.contains(";") || data.contains("\"") || data.contains("'")) {
-            data = data.replace("\"", "\"\"");
-            escapedData = "\"" + data + "\"";
-        }
-        return escapedData;
+        return String.join(";", data);
     }
 }

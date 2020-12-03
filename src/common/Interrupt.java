@@ -3,8 +3,8 @@ package common;
 import java.util.Scanner;
 
 public class Interrupt extends Thread {
-    String interrupt_key = null;
-    Object semaphore = null;
+    String interrupt_key;
+    Object semaphore;
     //variable to change when start
     private boolean interrupted = false;
 
@@ -19,7 +19,6 @@ public class Interrupt extends Thread {
             //read the key
             Scanner scanner = new Scanner(System.in);
             String x = scanner.nextLine();
-            //System.out.println(x);
             if (x.equals(this.interrupt_key)) {
                 //if is the key we expect, change the variable, notify and return(finish thread)
                 synchronized (this.semaphore) {

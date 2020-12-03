@@ -10,7 +10,7 @@ public interface OMCEClient extends Remote {
 
     boolean isRegistered() throws RemoteException;
 
-    String getId() throws RemoteException;
+    String getStudentId() throws RemoteException;
 
     void notifyQuiz(String quiz) throws RemoteException;
 

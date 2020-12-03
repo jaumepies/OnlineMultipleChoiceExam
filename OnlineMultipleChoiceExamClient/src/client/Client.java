@@ -14,31 +14,43 @@ public class Client {
             Registry registry = LocateRegistry.getRegistry(host);
             OMCEClient client = new OMCEClientImpl();
             OMCEServer server = (OMCEServer) registry.lookup("Hello");
+
+            // Check to see if the exam has already started
             if (server.isExamStarted()) {
                 System.out.println("The exam has already started.");
                 System.exit(0);
             }
-            String id;
+
+            String studentId;
+            // As long as the student has not registered
             do{
+                // As long as the studentId is not alphanumeric
                 do{
-                    id = client.getId();
-                }while(!client.isCorrectId(id));
-                server.registerStudent(client, id);
+                    studentId = client.getStudentId();
+                }while(!client.isCorrectId(studentId));
+
+                // Registers the student
+                server.registerStudent(client, studentId);
             }while(!client.isRegistered());
 
             synchronized (client){
+                // Wait until the start of the exam
                 client.wait();
-                //mentre no final de examen
-                while(!server.isStudentExamFinished(id)){ //quan JO(alumne) acabo el examen
-                    ThreadAnswer thread = new ThreadAnswer(server, client, id);
+
+                // While the exam session has not finished
+                while(!server.isStudentExamFinished(studentId)){
+                    // Thread to get the answer from stdin and send it to the server
+                    ThreadAnswer thread = new ThreadAnswer(server, client, studentId);
                     thread.start();
+
+                    // Waiting for the next quiz or result
                     client.wait();
                 }
                 System.out.println("The exam session has finished.");
             }
             System.exit(0);
         } catch (Exception e) {
-            System.out.println("The exam session has not started yet. Try to reconnect in few minutes.");
+            System.out.println("Exam session is not reachable. Try to reconnect in few minutes.");
             System.exit(0);
         }
     }

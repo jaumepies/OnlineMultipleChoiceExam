@@ -13,10 +13,6 @@ public class Exam {
         this.isFinished = false;
     }
 
-    public ArrayList<Quiz> getQuizzes() {
-        return quizzes;
-    }
-
     public Quiz getNextQuiz(){
         for(Quiz q: quizzes){
             if(q.selectedChoice == null){
@@ -33,6 +29,7 @@ public class Exam {
     public String getResult() {
         int correct = 0;
 
+        // For each quiz check if the correct answer matches with selected choice
         for(Quiz q: quizzes){
             if(q.selectedChoice != null && q.selectedChoice == q.getCorrectAnswer()){
                 correct++;
