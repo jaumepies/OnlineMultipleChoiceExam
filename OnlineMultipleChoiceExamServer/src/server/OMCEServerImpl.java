@@ -80,9 +80,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 error_students.add(s.getKey());
             }
         }
-        for(String s: error_students){
-            this.students.remove(s);
-        }
+        removeStudents();
     }
 
     /**
@@ -147,9 +145,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             sendQuizzes();
         else
             sendQuiz();
-        for(String s: error_students){
-            this.students.remove(s);
-        }
+        removeStudents();
     }
 
     private void sendQuizzes(){
@@ -222,9 +218,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 error_students.add(s.getKey());
             }
         }
-        for(String s: error_students){
-            this.students.remove(s);
-        }
+        removeStudents();
     }
 
     /**
@@ -258,5 +252,11 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
      */
     private String convertToCSV(String[] data) {
         return String.join(";", data);
+    }
+
+    private void removeStudents() {
+        for(String s: error_students){
+            this.students.remove(s);
+        }
     }
 }
