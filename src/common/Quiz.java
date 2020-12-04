@@ -3,11 +3,11 @@ package common;
 import java.util.ArrayList;
 
 public class Quiz {
-    public int id;
+    private int id;
     private String question;
     private ArrayList<String> choices;
     private int correctAnswer;
-    public Integer selectedChoice;
+    private Integer selectedChoice;
 
     public Quiz(int id, String question, ArrayList<String> choices, int correctAnswer, Integer selectedChoice) {
         this.id = id;
@@ -28,4 +28,15 @@ public class Quiz {
         return  quiz;
     }
 
+    public Integer getSelectedChoice() {
+        return selectedChoice;
+    }
+
+    public void setSelectedChoice(Integer selectedChoice) {
+        this.selectedChoice = selectedChoice;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

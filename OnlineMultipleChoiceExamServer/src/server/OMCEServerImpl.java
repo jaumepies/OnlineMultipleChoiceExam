@@ -49,7 +49,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 this.notify();
             } catch (RemoteException e) {
                 System.out.println(studentId + " is not reachable to registering.");
-                students.remove(studentId);
+                removeStudent(studentId);
             }
         }
     }
@@ -130,7 +130,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
      */
     public boolean isStudentExamFinished(String studentId){
         Exam exam = studentExams.get(studentId);
-        return exam.isFinished;
+        return exam.isFinished();
     }
 
     /**
@@ -169,13 +169,12 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             if(nextQuiz!= null){
                 students.get(studentId).notifyQuiz(nextQuiz.toString());
             }else{
-                exam.isFinished = true;
+                exam.setFinished(true);
                 // Get the result of the exam
-                String result = exam.getResult();
+                String result = exam.calculateResult();
                 student.notifyResult(result);
-                this.students.remove(studentId);
                 System.out.println("Student " + studentId + " has finished the exam.");
-                System.out.println("There are " + getNumStudents() + " remaining students");
+                removeStudent(studentId);
             }
         }catch(RemoteException e){
             System.out.println(studentId + " is not reachable to send quiz.");
@@ -191,7 +190,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             Exam exam = studentExams.get(studentId);
             // Get the next quiz to send
             Quiz quiz = exam.getNextQuiz();
-            quiz.selectedChoice = Integer.parseInt(answerNum);
+            quiz.setSelectedChoice(Integer.parseInt(answerNum));
             // Updates the exam with the received answer
             exam.setQuiz(quiz);
             studentExams.put(studentId, exam);
@@ -209,9 +208,9 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             try{
                 Exam exam = studentExams.get(s.getKey());
-                exam.isFinished = true;
+                exam.setFinished(true);
                 // Get the result of the exam
-                String result = exam.getResult();
+                String result = exam.calculateResult();
                 s.getValue().notifyResult(result);
             }catch(RemoteException e){
                 System.out.println(s.getKey() + " is not reachable to send result.");
@@ -230,7 +229,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         studentGrades.add(new String[]{"UniversityID","Grade"});
 
         for (HashMap.Entry<String, Exam> s : studentExams.entrySet()) {
-            studentGrades.add(new String[]{s.getKey(),s.getValue().result});
+            studentGrades.add(new String[]{s.getKey(),s.getValue().getResult()});
         }
 
         // Add the filename to the absolute path
@@ -242,6 +241,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
             for (String[] studentGrade : studentGrades){
                 pw.println(convertToCSV(studentGrade));
             }
+            System.out.println("Results has been stored in results.csv file.");
         }catch (IOException e){
             System.out.println("Error writing to file");
         }
@@ -256,7 +256,17 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
 
     private void removeStudents() {
         for(String s: error_students){
-            this.students.remove(s);
+            removeStudent(s);
         }
+    }
+
+    private void removeStudent(String s) {
+        this.students.remove(s);
+        System.out.println("There are " + getNumStudents() + " remaining students");
+    }
+
+    public void notifyStudentLeaved(String studentId){
+        System.out.println("Student " + studentId + " has leaved the exam.");
+        removeStudent(studentId);
     }
 }

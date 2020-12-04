@@ -38,7 +38,8 @@ public class Client {
                 String leave_key = "leave";
 
                 // Wait until exam starts
-                client.wait(10000);
+                // Timeout if server does not start the exam within 10 minutes
+                client.wait(600000);
 
                 // While the exam session has not finished
                 while(!server.isStudentExamFinished(studentId)){
@@ -48,12 +49,13 @@ public class Client {
                     // Waiting for the next quiz or result
                     client.wait();
                     if (client.getAnswer().equals(leave_key)){
-                        //server.notifyStudentLeaved(studentId);
+                        server.notifyStudentLeaved(studentId);
                         System.exit(0);
                     }
 
                     server.sendAnswer(studentId, client.getAnswer());
-                    client.wait(10000);
+                    // Timeout for next quiz waiting is 5 minutes in case of bad connection with server
+                    client.wait(300000);
                 }
                 System.out.println("The exam session has finished.");
             }
