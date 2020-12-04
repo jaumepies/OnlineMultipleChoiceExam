@@ -34,23 +34,32 @@ public class Client {
             }while(!client.isRegistered());
 
             synchronized (client){
-                // Wait until the start of the exam
-                client.wait();
+
+                String leave_key = "leave";
+
+                // Wait until exam starts
+                client.wait(10000);
 
                 // While the exam session has not finished
                 while(!server.isStudentExamFinished(studentId)){
                     // Thread to get the answer from stdin and send it to the server
-                    ThreadAnswer thread = new ThreadAnswer(server, client, studentId);
+                    ThreadAnswer thread = new ThreadAnswer(client);
                     thread.start();
-
                     // Waiting for the next quiz or result
                     client.wait();
+                    if (client.getAnswer().equals(leave_key)){
+                        //server.notifyStudentLeaved(studentId);
+                        System.exit(0);
+                    }
+
+                    server.sendAnswer(studentId, client.getAnswer());
+                    client.wait(10000);
                 }
                 System.out.println("The exam session has finished.");
             }
-            System.exit(0);
+            client.leaveSession();
         } catch (Exception e) {
-            System.out.println("Exam session is not reachable. Try to reconnect in few minutes.");
+            System.out.println("Exam session is not reachable.");
             System.exit(0);
         }
     }

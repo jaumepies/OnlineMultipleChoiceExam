@@ -11,25 +11,26 @@ import java.rmi.RemoteException;
  */
 public class ThreadAnswer extends Thread {
 
-    OMCEServer server;
-    OMCEClient client;
-    String studentId;
+    private OMCEClient client;
+    private String answer;
 
-    public ThreadAnswer(OMCEServer server, OMCEClient client, String studentId) {
-        this.server = server;
+    public ThreadAnswer(OMCEClient client) {
         this.client = client;
-        this.studentId = studentId;
     }
 
     public void run() {
         try{
-            String answer = client.getAnswer();
-            server.sendAnswer(studentId, answer);
+            answer = client.inputAnswer();
+            client.setAnswer(answer);
+            synchronized (this.client) {
+                this.client.notify();
+            }
         }catch(RemoteException e){
             System.out.println("Exam session is not reachable");
             System.exit(0);
         }
 
     }
+
 
 }

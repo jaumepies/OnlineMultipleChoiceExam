@@ -1,7 +1,5 @@
 package server;
 
-
-
 import common.Exam;
 import common.OMCEClient;
 import common.OMCEServer;
@@ -176,6 +174,8 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 String result = exam.getResult();
                 student.notifyResult(result);
                 this.students.remove(studentId);
+                System.out.println("Student " + studentId + " has finished the exam.");
+                System.out.println("There are " + getNumStudents() + " remaining students");
             }
         }catch(RemoteException e){
             System.out.println(studentId + " is not reachable to send quiz.");

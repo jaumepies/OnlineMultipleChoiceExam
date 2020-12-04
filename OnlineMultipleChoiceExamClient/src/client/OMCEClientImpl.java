@@ -9,6 +9,8 @@ import java.util.Scanner;
 public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     private boolean isRegistered = false;
+    private String answer;
+
     public OMCEClientImpl() throws RemoteException {}
 
     public void notifyStartExam() {
@@ -48,10 +50,21 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
         }
     }
 
-    public String getAnswer(){
+    public String inputAnswer(){
         Scanner keyboard = new Scanner(System.in);
-        System.out.println("Enter your answer number:");
+        System.out.println("Enter your answer number or \"leave\" to leave the exam");
         return keyboard.nextLine();
+    }
+
+    public void leaveSession() {
+        String line;
+        String leave_key = "leave";
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("Enter \"leave\" to leave the exam");
+            line = scanner.nextLine();
+        } while (!line.equals(leave_key));
+        System.exit(0);
     }
 
     public void notifyResult(String result){
@@ -59,5 +72,13 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
         synchronized (this) {
             this.notify();
         }
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+
+    }
+    public String getAnswer() {
+        return this.answer;
     }
 }
