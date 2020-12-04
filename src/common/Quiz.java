@@ -21,11 +21,14 @@ public class Quiz {
 
     @Override
     public String toString() {
-        String quiz =question + '\n';
+        StringBuilder sb = new StringBuilder();
+        //String quiz =question + '\n';
+        sb.append(question).append("\n");
         for(int i = 0;i<choices.size();i++){
-            quiz += (i+1) + ") " + choices.get(i) + '\n';
+            sb.append((i+1)).append(") ").append(choices.get(i)).append("\n");
+            //quiz += (i+1) + ") " + choices.get(i) + '\n';
         }
-        return  quiz;
+        return sb.toString();
     }
 
     public Integer getSelectedChoice() {
