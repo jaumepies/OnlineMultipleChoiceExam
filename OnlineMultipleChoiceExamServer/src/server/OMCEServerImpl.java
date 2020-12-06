@@ -97,8 +97,6 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         Scanner keyboard = new Scanner(System.in);
         System.out.println(message);
         return keyboard.nextLine();
-        //return "C:/Users/Ricard/Downloads/exam.csv";
-        //return "C:/Users/jaume/IdeaProjects/OnlineMultipleChoiceExam/OnlineMultipleChoiceExamServer/Exams/exam.csv";
     }
 
     /**
@@ -254,17 +252,26 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         return String.join(";", data);
     }
 
+    /**
+     *  For each students remove the student who has error in the connection
+     */
     private void removeStudents() {
         for(String s: error_students){
             removeStudent(s);
         }
     }
 
+    /**
+     * Removes students and prints the remaining students registered.
+     */
     private void removeStudent(String s) {
         this.students.remove(s);
         System.out.println("There are " + getNumStudents() + " remaining students");
     }
 
+    /**
+     * Notify to the server the student who has leaved the exam.
+     */
     public void notifyStudentLeaved(String studentId){
         System.out.println("Student " + studentId + " has leaved the exam.");
         removeStudent(studentId);

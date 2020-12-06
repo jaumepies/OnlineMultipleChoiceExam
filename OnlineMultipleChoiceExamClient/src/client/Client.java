@@ -49,6 +49,7 @@ public class Client {
                     // Waiting for the next quiz or result
                     client.wait();
                     if (client.getAnswer().equals(leave_key)){
+                        // Notify server he leaves.
                         server.notifyStudentLeaved(studentId);
                         System.exit(0);
                     }
@@ -59,6 +60,7 @@ public class Client {
                 }
                 System.out.println("The exam session has finished.");
             }
+            // Student leaves the sesion
             client.leaveSession();
         } catch (Exception e) {
             System.out.println("Exam session is not reachable.");
