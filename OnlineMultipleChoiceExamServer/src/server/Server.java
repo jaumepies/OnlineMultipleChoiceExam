@@ -82,7 +82,7 @@ public class Server {
                 // Until the stdin is an absolute path directory
                 do{
                     csvPath = server.getFilePath("Please, enter the absolute path directory to store results file.");
-                }while(!server.csvPathIsDirectory(csvPath));
+                }while(!server.isCsvPathDirectory(csvPath));
 
                 // Creates the results.csv
                 server.createResultsFile(csvPath);
