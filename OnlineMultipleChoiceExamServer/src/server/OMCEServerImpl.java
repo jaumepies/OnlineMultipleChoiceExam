@@ -102,7 +102,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     /**
      * Check if the absolute path is a file
      */
-    public boolean csvPathIsFile(String csvPath) {
+    public boolean isCsvPathFile(String csvPath) {
         File file = new File(csvPath);
         return file.isFile();
     }

@@ -26,7 +26,7 @@ public interface OMCEServer extends Remote {
 
     void sendResults() throws RemoteException;
 
-    boolean csvPathIsFile(String csvPath) throws RemoteException;
+    boolean isCsvPathFile(String csvPath) throws RemoteException;
 
     boolean csvPathIsDirectory(String csvPath) throws RemoteException;
 

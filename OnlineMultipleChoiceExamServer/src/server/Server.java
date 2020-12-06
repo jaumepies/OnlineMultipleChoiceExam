@@ -40,7 +40,7 @@ public class Server {
             do{
                 // Read the route of .csv file
                 csvPath = server.getFilePath("Please, enter the absolute route of .csv exam file.");
-            }while(!server.csvPathIsFile(csvPath));
+            }while(!server.isCsvPathFile(csvPath));
             System.out.println("The exam is uploaded correctly");
 
             registry.bind("Hello",  server);
