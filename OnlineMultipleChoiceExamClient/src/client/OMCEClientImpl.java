@@ -12,6 +12,7 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     private String answer = "";
     private Scanner scanner = new Scanner(System.in);
     private boolean examFinished = false;
+    public static final String leave_key = "leave";
 
     public OMCEClientImpl() throws RemoteException {}
 
@@ -44,6 +45,10 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
         return id.matches("[A-Za-z0-9]+");
     }
 
+    public boolean isCorrectAnswer(String answer) {
+        return answer.matches("[0-9]+") || answer.equals(leave_key);
+    }
+
     public void notifyQuiz(String quiz){
         synchronized (this) {
             System.out.println(quiz);
@@ -57,7 +62,6 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     }
 
     public void leaveSession() {
-        String leave_key = "leave";
         while (!getAnswer().equals(leave_key)){
             System.out.println("Enter \"leave\" to leave the exam");
             setAnswer(scanner.nextLine());

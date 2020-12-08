@@ -19,7 +19,10 @@ public class ThreadAnswer extends Thread {
 
     public void run() {
         try{
-            answer = client.inputAnswer();
+            do {
+                answer = client.inputAnswer();
+            }while (!client.isCorrectAnswer(answer));
+
             client.setAnswer(answer);
             if (client.isExamFinished())
                 client.leaveSession();

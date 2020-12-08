@@ -22,6 +22,8 @@ public interface OMCEClient extends Remote {
 
     boolean isCorrectId(String id) throws RemoteException;
 
+    boolean isCorrectAnswer(String answer) throws RemoteException;
+
     void leaveSession() throws RemoteException;
 
     void setAnswer(String answer) throws RemoteException;
