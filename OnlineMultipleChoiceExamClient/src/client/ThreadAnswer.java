@@ -1,7 +1,6 @@
 package client;
 
 import common.OMCEClient;
-import common.OMCEServer;
 
 import java.rmi.RemoteException;
 
@@ -22,6 +21,8 @@ public class ThreadAnswer extends Thread {
         try{
             answer = client.inputAnswer();
             client.setAnswer(answer);
+            if (client.isExamFinished())
+                client.leaveSession();
             synchronized (this.client) {
                 this.client.notify();
             }

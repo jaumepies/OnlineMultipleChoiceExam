@@ -9,7 +9,9 @@ import java.util.Scanner;
 public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     private boolean isRegistered = false;
-    private String answer;
+    private String answer = "";
+    private Scanner scanner = new Scanner(System.in);
+    private boolean examFinished = false;
 
     public OMCEClientImpl() throws RemoteException {}
 
@@ -34,9 +36,8 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     }
 
     public String getStudentId(){
-        Scanner keyboard = new Scanner(System.in);
         System.out.println("Enter your university ID");
-        return keyboard.nextLine();
+        return scanner.nextLine();
     }
 
     public boolean isCorrectId(String id) {
@@ -44,32 +45,30 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     }
 
     public void notifyQuiz(String quiz){
-        System.out.println(quiz);
         synchronized (this) {
+            System.out.println(quiz);
             this.notify();
         }
     }
 
     public String inputAnswer(){
-        Scanner keyboard = new Scanner(System.in);
         System.out.println("Enter your answer number or \"leave\" to leave the exam");
-        return keyboard.nextLine();
+        return scanner.nextLine();
     }
 
     public void leaveSession() {
-        String line;
         String leave_key = "leave";
-        Scanner scanner = new Scanner(System.in);
-        do {
+        while (!getAnswer().equals(leave_key)){
             System.out.println("Enter \"leave\" to leave the exam");
-            line = scanner.nextLine();
-        } while (!line.equals(leave_key));
+            setAnswer(scanner.nextLine());
+        }
         System.exit(0);
     }
 
     public void notifyResult(String result){
-        System.out.println("The result is: "+ result);
         synchronized (this) {
+            System.out.println("The exam session has finished.");
+            System.out.println("Your result is: "+ result);
             this.notify();
         }
     }
@@ -80,5 +79,13 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
     }
     public String getAnswer() {
         return this.answer;
+    }
+
+    public boolean isExamFinished() {
+        return examFinished;
+    }
+
+    public void setExamFinished(boolean examFinished) {
+        this.examFinished = examFinished;
     }
 }

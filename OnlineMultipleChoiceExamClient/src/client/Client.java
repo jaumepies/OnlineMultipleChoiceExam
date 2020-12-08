@@ -33,7 +33,7 @@ public class Client {
                 server.registerStudent(client, studentId);
             }while(!client.isRegistered());
 
-            synchronized (client){
+            synchronized (client) {
 
                 String leave_key = "leave";
 
@@ -42,26 +42,34 @@ public class Client {
                 client.wait(600000);
 
                 // While the exam session has not finished
-                while(!server.isStudentExamFinished(studentId)){
+                while(!server.isStudentExamFinished(studentId)) {
                     // Thread to get the answer from stdin and send it to the server
                     ThreadAnswer thread = new ThreadAnswer(client);
                     thread.start();
                     // Waiting for the next quiz or result
                     client.wait();
-                    if (client.getAnswer().equals(leave_key)){
+                    // Check if the server writes finish
+                    if ((server.isStudentExamFinished(studentId))){
+                        // Interrupts the thread which is listening answers
+                        System.out.println("Enter \"leave\" to leave the exam");
+                        client.setExamFinished(true);
+                        break;
+                    }
+                    if (client.getAnswer().equals(leave_key)) {
                         // Notify server he leaves.
                         server.notifyStudentLeaved(studentId);
                         System.exit(0);
                     }
-
                     server.sendAnswer(studentId, client.getAnswer());
                     // Timeout for next quiz waiting is 5 minutes in case of bad connection with server
                     client.wait(300000);
                 }
-                System.out.println("The exam session has finished.");
+
+                if (!client.isExamFinished()){
+                    // Student leaves the sesion
+                    client.leaveSession();
+                }
             }
-            // Student leaves the sesion
-            client.leaveSession();
         } catch (Exception e) {
             System.out.println("Exam session is not reachable.");
             System.exit(0);

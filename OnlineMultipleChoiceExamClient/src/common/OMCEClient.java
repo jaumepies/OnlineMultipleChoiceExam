@@ -27,4 +27,8 @@ public interface OMCEClient extends Remote {
     void setAnswer(String answer) throws RemoteException;
 
     String getAnswer() throws RemoteException;
+
+    void setExamFinished(boolean examFinished) throws  RemoteException;
+
+    boolean isExamFinished() throws RemoteException;
 }
