@@ -22,9 +22,15 @@ public interface OMCEClient extends Remote {
 
     boolean isCorrectId(String id) throws RemoteException;
 
+    boolean isCorrectAnswer(String answer) throws RemoteException;
+
     void leaveSession() throws RemoteException;
 
     void setAnswer(String answer) throws RemoteException;
 
     String getAnswer() throws RemoteException;
+
+    void setExamFinished(boolean examFinished) throws  RemoteException;
+
+    boolean isExamFinished() throws RemoteException;
 }
