@@ -50,7 +50,7 @@ public class Client {
                     client.wait();
                     // Check if the server writes finish
                     if ((server.isStudentExamFinished(studentId))){
-                        // Interrupts the thread which is listening answers
+                        // Changes the examFinished state if the server finish the exam
                         System.out.println("Enter \"leave\" to leave the exam");
                         client.setExamFinished(true);
                         break;
