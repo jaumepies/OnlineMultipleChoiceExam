@@ -33,4 +33,6 @@ public interface OMCEClient extends Remote {
     void setExamFinished(boolean examFinished) throws  RemoteException;
 
     boolean isExamFinished() throws RemoteException;
+
+    void checkStartExam(OMCEServer server) throws RemoteException;
 }

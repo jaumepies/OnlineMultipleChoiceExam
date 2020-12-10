@@ -1,6 +1,7 @@
 package client;
 
 import common.OMCEClient;
+import common.OMCEServer;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -91,5 +92,12 @@ public class OMCEClientImpl extends UnicastRemoteObject implements OMCEClient {
 
     public void setExamFinished(boolean examFinished) {
         this.examFinished = examFinished;
+    }
+
+    public void checkStartExam(OMCEServer server) throws RemoteException {
+        if (server.isExamStarted()) {
+            System.out.println("The exam has already started.");
+            System.exit(0);
+        }
     }
 }

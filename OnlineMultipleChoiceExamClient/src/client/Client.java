@@ -16,10 +16,7 @@ public class Client {
             OMCEServer server = (OMCEServer) registry.lookup("Hello");
 
             // Check to see if the exam has already started
-            if (server.isExamStarted()) {
-                System.out.println("The exam has already started.");
-                System.exit(0);
-            }
+            client.checkStartExam(server);
 
             String studentId;
             // As long as the student has not registered
@@ -29,6 +26,8 @@ public class Client {
                     studentId = client.getStudentId();
                 }while(!client.isCorrectId(studentId));
 
+                // Check to see if the exam has already started
+                client.checkStartExam(server);
                 // Registers the student
                 server.registerStudent(client, studentId);
             }while(!client.isRegistered());
