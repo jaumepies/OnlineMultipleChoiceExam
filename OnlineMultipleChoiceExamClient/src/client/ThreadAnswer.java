@@ -18,10 +18,10 @@ public class ThreadAnswer extends Thread {
     }
 
     public void run() {
-        try{
+        try {
             do {
                 answer = client.inputAnswer();
-            }while (!client.isCorrectAnswer(answer));
+            } while (!client.isCorrectAnswer(answer));
 
             client.setAnswer(answer);
             if (client.isExamFinished())
@@ -29,7 +29,7 @@ public class ThreadAnswer extends Thread {
             synchronized (this.client) {
                 this.client.notify();
             }
-        }catch(RemoteException e){
+        } catch (RemoteException e) {
             System.out.println("Exam session is not reachable");
             System.exit(0);
         }

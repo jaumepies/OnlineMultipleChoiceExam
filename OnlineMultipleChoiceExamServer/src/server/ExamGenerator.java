@@ -16,7 +16,7 @@ public class ExamGenerator {
      * Reads from the file and for each line of it creates a quiz.
      * Once all the quizzes have been created, it returns an exam with his quizzes
      */
-    public static Exam generateExam(String csvFile){
+    public static Exam generateExam(String csvFile) {
         String line;
         idQuiz = 0;
         ArrayList<Quiz> quizzes = new ArrayList<>();

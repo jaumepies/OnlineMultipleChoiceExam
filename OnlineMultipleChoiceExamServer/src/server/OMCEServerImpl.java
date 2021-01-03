@@ -23,15 +23,16 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     boolean isExamStarted = false;
     private String studentToNotify = "ALL";
 
-    public OMCEServerImpl() throws RemoteException{}
+    public OMCEServerImpl() throws RemoteException {
+    }
 
     /**
      * Check if the student is registered, otherwise it is registered
      */
     public void registerStudent(OMCEClient student, String studentId) {
-        if(students.containsKey(studentId)){
+        if (students.containsKey(studentId)) {
             anotherStudentRegistered(student);
-        }else {
+        } else {
             registerNewStudent(student, studentId);
         }
     }
@@ -60,7 +61,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     private void anotherStudentRegistered(OMCEClient student) {
         try {
             student.notifyRegisteredStudent();
-        }catch (RemoteException e) {
+        } catch (RemoteException e) {
         }
     }
 
@@ -68,12 +69,12 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
      * Notifies all the students that the exam is going to start.
      * In case it cannot establish a connection with the students, it removes them.
      */
-    public void notifyStartExam(){
+    public void notifyStartExam() {
         isExamStarted = true;
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
-            try{
+            try {
                 s.getValue().notifyStartExam();
-            }catch(RemoteException e){
+            } catch (RemoteException e) {
                 System.out.println(s.getKey() + " is not reachable to starting the exam.");
                 error_students.add(s.getKey());
             }
@@ -84,7 +85,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     /**
      * Generates a Hashmap with a copy of the exam for each student registered
      */
-    public void generateStudentExams(String csvPath){
+    public void generateStudentExams(String csvPath) {
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             studentExams.put(s.getKey(), ExamGenerator.generateExam(csvPath));
         }
@@ -93,7 +94,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     /**
      * Gets the absolute path of the file from stdin
      */
-    public String getFilePath(String message){
+    public String getFilePath(String message) {
         Scanner keyboard = new Scanner(System.in);
         System.out.println(message);
         return keyboard.nextLine();
@@ -115,18 +116,18 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         return file.isDirectory();
     }
 
-    public int getNumStudents(){
+    public int getNumStudents() {
         return students.size();
     }
 
-    public boolean isExamStarted(){
+    public boolean isExamStarted() {
         return isExamStarted;
     }
 
     /**
      * Check if the student has finished the exam
      */
-    public boolean isStudentExamFinished(String studentId){
+    public boolean isStudentExamFinished(String studentId) {
         Exam exam = studentExams.get(studentId);
         return exam.isFinished();
     }
@@ -144,7 +145,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         removeStudents();
     }
 
-    private void sendQuizzes(){
+    private void sendQuizzes() {
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
             sendQuizTo(s.getKey(), s.getValue());
         }
@@ -159,14 +160,14 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
      * In case it cannot establish a connection with the student, it removes it.
      */
     private void sendQuizTo(String studentId, OMCEClient student) {
-        try{
+        try {
 
             Exam exam = studentExams.get(studentId);
             // Get the next quiz to send
             Quiz nextQuiz = exam.getNextQuiz();
-            if(nextQuiz!= null){
+            if (nextQuiz != null) {
                 students.get(studentId).notifyQuiz(nextQuiz.toString());
-            }else{
+            } else {
                 exam.setFinished(true);
                 // Get the result of the exam
                 String result = exam.calculateResult();
@@ -174,7 +175,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
                 System.out.println("Student " + studentId + " has finished the exam.");
                 removeStudent(studentId);
             }
-        }catch(RemoteException e){
+        } catch (RemoteException e) {
             System.out.println(studentId + " is not reachable to send quiz.");
             error_students.add(studentId);
         }
@@ -201,16 +202,16 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
      * Sends the result of the exam to students.
      * In case it cannot establish a connection with the students, it removes them.
      */
-    public void sendResults(){
+    public void sendResults() {
         error_students = new ArrayList<>();
         for (HashMap.Entry<String, OMCEClient> s : students.entrySet()) {
-            try{
+            try {
                 Exam exam = studentExams.get(s.getKey());
                 exam.setFinished(true);
                 // Get the result of the exam
                 String result = exam.calculateResult();
                 s.getValue().notifyResult(result);
-            }catch(RemoteException e){
+            } catch (RemoteException e) {
                 System.out.println(s.getKey() + " is not reachable to send result.");
                 error_students.add(s.getKey());
             }
@@ -221,13 +222,13 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     /**
      * Creates the output file where it stores all the id students with their grade
      */
-    public void createResultsFile(String csvPath){
+    public void createResultsFile(String csvPath) {
         ArrayList<String[]> studentGrades = new ArrayList<>();
         // Add the title of the columns
-        studentGrades.add(new String[]{"UniversityID","Grade"});
+        studentGrades.add(new String[]{"UniversityID", "Grade"});
 
         for (HashMap.Entry<String, Exam> s : studentExams.entrySet()) {
-            studentGrades.add(new String[]{s.getKey(),s.getValue().getResult()});
+            studentGrades.add(new String[]{s.getKey(), s.getValue().getResult()});
         }
 
         // Add the filename to the absolute path
@@ -236,11 +237,11 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
         File csvOutputFile = new File(csvPath);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
             // Prints each line to the output file
-            for (String[] studentGrade : studentGrades){
+            for (String[] studentGrade : studentGrades) {
                 pw.println(convertToCSV(studentGrade));
             }
             System.out.println("Results has been stored in results.csv file.");
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("Error writing to file");
         }
     }
@@ -253,10 +254,10 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     }
 
     /**
-     *  For each students remove the student who has error in the connection
+     * For each students remove the student who has error in the connection
      */
     private void removeStudents() {
-        for(String s: error_students){
+        for (String s : error_students) {
             removeStudent(s);
         }
     }
@@ -272,7 +273,7 @@ public class OMCEServerImpl extends UnicastRemoteObject implements OMCEServer {
     /**
      * Notify to the server the student who has leaved the exam.
      */
-    public void notifyStudentLeaved(String studentId){
+    public void notifyStudentLeaved(String studentId) {
         System.out.println("Student " + studentId + " has leaved the exam.");
         removeStudent(studentId);
     }

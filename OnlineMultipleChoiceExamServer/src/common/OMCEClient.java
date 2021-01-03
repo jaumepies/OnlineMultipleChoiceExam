@@ -30,7 +30,7 @@ public interface OMCEClient extends Remote {
 
     String getAnswer() throws RemoteException;
 
-    void setExamFinished(boolean examFinished) throws  RemoteException;
+    void setExamFinished(boolean examFinished) throws RemoteException;
 
     boolean isExamFinished() throws RemoteException;
 

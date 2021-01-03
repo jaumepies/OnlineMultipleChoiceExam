@@ -8,7 +8,7 @@ import java.rmi.registry.Registry;
 
 public class Client {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         String host = (args.length < 1) ? null : args[0];
         try {
             Registry registry = LocateRegistry.getRegistry(host);
@@ -20,17 +20,17 @@ public class Client {
 
             String studentId;
             // As long as the student has not registered
-            do{
+            do {
                 // As long as the studentId is not alphanumeric
-                do{
+                do {
                     studentId = client.getStudentId();
-                }while(!client.isCorrectId(studentId));
+                } while (!client.isCorrectId(studentId));
 
                 // Check to see if the exam has already started
                 client.checkStartExam(server);
                 // Registers the student
                 server.registerStudent(client, studentId);
-            }while(!client.isRegistered());
+            } while (!client.isRegistered());
 
             synchronized (client) {
 
@@ -41,14 +41,14 @@ public class Client {
                 client.wait(600000);
 
                 // While the exam session has not finished
-                while(!server.isStudentExamFinished(studentId)) {
+                while (!server.isStudentExamFinished(studentId)) {
                     // Thread to get the answer from stdin and send it to the server
                     ThreadAnswer thread = new ThreadAnswer(client);
                     thread.start();
                     // Waiting for the next quiz or result
                     client.wait();
                     // Check if the server writes finish
-                    if ((server.isStudentExamFinished(studentId))){
+                    if ((server.isStudentExamFinished(studentId))) {
                         // Changes the examFinished state if the server finish the exam
                         System.out.println("Enter \"leave\" to leave the exam");
                         client.setExamFinished(true);
@@ -64,7 +64,7 @@ public class Client {
                     client.wait(300000);
                 }
 
-                if (!client.isExamFinished()){
+                if (!client.isExamFinished()) {
                     // Student leaves the sesion
                     client.leaveSession();
                 }

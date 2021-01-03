@@ -17,15 +17,17 @@ public class Quiz {
         this.selectedChoice = selectedChoice;
     }
 
-    public int getCorrectAnswer() { return this.correctAnswer; }
+    public int getCorrectAnswer() {
+        return this.correctAnswer;
+    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         //String quiz =question + '\n';
         sb.append(question).append("\n");
-        for(int i = 0;i<choices.size();i++){
-            sb.append((i+1)).append(") ").append(choices.get(i)).append("\n");
+        for (int i = 0; i < choices.size(); i++) {
+            sb.append((i + 1)).append(") ").append(choices.get(i)).append("\n");
             //quiz += (i+1) + ") " + choices.get(i) + '\n';
         }
         return sb.toString();

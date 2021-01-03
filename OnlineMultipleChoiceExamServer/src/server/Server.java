@@ -11,39 +11,38 @@ public class Server {
 
     private static Registry startRegistry(Integer port)
             throws RemoteException {
-        if(port == null) {
+        if (port == null) {
             port = 1099;
         }
         try {
             Registry registry = LocateRegistry.getRegistry(port);
-            registry.list( );
+            registry.list();
             // The above call will throw an exception
             // if the registry does not already exist
             return registry;
-        }
-        catch (RemoteException ex) {
+        } catch (RemoteException ex) {
             // No valid registry at that port.
             System.out.println("RMI registry cannot be located ");
-            Registry registry= LocateRegistry.createRegistry(port);
+            Registry registry = LocateRegistry.createRegistry(port);
             System.out.println("RMI registry created at port ");
             return registry;
         }
     }
 
-    public static void main(String[] args){
-        try{
+    public static void main(String[] args) {
+        try {
             Registry registry = startRegistry(null);
             OMCEServer server = new OMCEServerImpl();
 
             String csvPath;
             // Until the stdin is an absolute path file
-            do{
+            do {
                 // Read the route of .csv file
                 csvPath = server.getFilePath("Please, enter the absolute route of .csv exam file.");
-            }while(!server.isCsvPathFile(csvPath));
+            } while (!server.isCsvPathFile(csvPath));
             System.out.println("The exam is uploaded correctly");
 
-            registry.bind("Hello",  server);
+            registry.bind("Hello", server);
 
             synchronized (server) {
                 String start_word = "start";
@@ -52,9 +51,9 @@ public class Server {
                 interruptStart.start();
 
                 // As long as the start word is not written
-                while(!interruptStart.isInterrupted()){
+                while (!interruptStart.isInterrupted()) {
                     System.out.println("Students registered " + server.getNumStudents());
-                    System.out.println("Write \""+ start_word +"\" to start the exam");
+                    System.out.println("Write \"" + start_word + "\" to start the exam");
                     server.wait();
                     //server.wait can be notified from the interrupt key, or the remote object implemented
                 }
@@ -68,10 +67,10 @@ public class Server {
                 Interrupt interruptFinish = new Interrupt(server, finish_word);
                 //The tread starts reading for the key
                 interruptFinish.start();
-                System.out.println("Write \""+ finish_word +"\" to finish the exam");
+                System.out.println("Write \"" + finish_word + "\" to finish the exam");
 
                 // As long as the finish word is not written
-                while(!interruptFinish.isInterrupted()) {
+                while (!interruptFinish.isInterrupted()) {
                     // Sends a quiz to the student
                     server.send();
                     server.wait();
@@ -80,16 +79,17 @@ public class Server {
                 server.sendResults();
 
                 // Until the stdin is an absolute path directory
-                do{
+                do {
                     csvPath = server.getFilePath("Please, enter the absolute path directory to store results file.");
-                }while(!server.isCsvPathDirectory(csvPath));
+                } while (!server.isCsvPathDirectory(csvPath));
 
                 // Creates the results.csv
                 server.createResultsFile(csvPath);
                 System.exit(0);
             }
-        }catch(Exception e){
-            System.err.println("Server exception: " + e.toString()); e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 }
