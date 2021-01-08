@@ -1,8 +1,5 @@
 package server;
 
-import common.Exam;
-import common.Quiz;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,17 +8,19 @@ import java.util.Arrays;
 
 public class ExamGenerator {
     private static int idQuiz;
+    private static String cvsSplitBy = ";";
 
     /**
      * Reads from the file and for each line of it creates a quiz.
      * Once all the quizzes have been created, it returns an exam with his quizzes
      */
     public static Exam generateExam(String csvFile) {
-        String line;
         idQuiz = 0;
         ArrayList<Quiz> quizzes = new ArrayList<>();
-
+        String[] content = new String[4];
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            content = getFirstLine(br.readLine()); // this will read the first line
+            String line;
             while ((line = br.readLine()) != null) {
                 Quiz quiz = getQuiz(line);
                 quizzes.add(quiz);
@@ -29,12 +28,25 @@ public class ExamGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Exam(quizzes);
+
+        Exam exam = new Exam(quizzes);
+        setContent(content, exam);
+        return exam;
+    }
+
+    private static void setContent(String[] content, Exam exam) {
+        exam.setDescription(content[0]);
+        exam.setDate(content[1]);
+        exam.setTime(content[2]);
+        exam.setLocation(content[3]);
+    }
+
+    private static String[] getFirstLine(String line) {
+        return line.split(cvsSplitBy);
     }
 
     private static Quiz getQuiz(String line) {
         // Use semicolon as separator
-        String cvsSplitBy = ";";
         String[] fragments = line.split(cvsSplitBy);
         String question = fragments[0];
         //It is stored in a ArrayList from the second item to the penultimate
